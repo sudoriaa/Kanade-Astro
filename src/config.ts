@@ -1,11 +1,14 @@
-// 网站基本信息
+// ---- 网站基本信息 ---- //
 export const siteInfo = {
+  // 网站标题
   title: "Kanade",
+  // 网站描述
   description: "Kanade A Blog built with Astro.",
+  // 网站关键字
   keywords: ["astro", "kanade", "blog", "Sudoria"],
 }
 
-// 导航栏配置
+// ---- 导航栏配置 ---- //
 export const headerConfig = {
     title: "Kanade",
     logo: "/src/assets/logo.png",
@@ -21,7 +24,7 @@ export const headerConfig = {
     githubLink: "",  // GitHub 链接(留空则不显示)
 }
 
-// 欢迎板块配置
+// ---- 欢迎板块配置 ---- //
 export const welcomeConfig = {
     title: "欢迎来到 Kanade",
     subTitle: "这是一个由 Astro 构建的博客网站。",

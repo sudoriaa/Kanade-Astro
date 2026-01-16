@@ -1,9 +1,27 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @plugin "@iconify/tailwind4";
 
-html, body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* 自定义字体 - 修复版 */
+@font-face {
+  font-family: "ZaoZiGongFangYueYuan";
+  src: url("/fonts/ZaoZiGongFangYueYuan.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
+@font-face {
+  font-family: "ZaoZiGongFangYueYuan";
+  src: url("/fonts/ZaoZiGongFangYueYuan.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal; /* 改为normal，bold是font-style的值 */
+  font-display: swap;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "ZaoZiGongFangYueYuan";
+  box-sizing: border-box;
+}

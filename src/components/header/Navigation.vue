@@ -92,7 +92,7 @@ onUnmounted(() => {
             <div class="flex items-center space-x-4">
                 <!-- 主题切换按钮 -->
                 <button class="p-2 rounded-full hover:bg-white/10 transition-colors duration-200" aria-label="切换主题">
-                    <span class="i-mdi-white-balance-sunny w-6 h-6"></span>
+                    <span class="i-mdi-white-balance-sunny w-6 h-6">12</span>
                 </button>
             </div>
         </div>

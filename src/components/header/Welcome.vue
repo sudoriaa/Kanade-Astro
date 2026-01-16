@@ -8,7 +8,7 @@ import Waves from '../Waves.vue';
 
 <template>
     <div class="relative text-center h-[60dvh] flex flex-col justify-center items-center
-    bg-cover bg-center after:absolute after:inset-0 after:bg-black/40 after:z-0"
+    bg-cover bg-center before:absolute before:inset-0 before:bg-black/30 before:z-0"
      :style="{ backgroundImage: `url('${welcomeConfig.bgImage}')` }">
         <div class="flex flex-col">
             <h1 class="">{{ welcomeConfig.title }}</h1>
