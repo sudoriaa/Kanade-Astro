@@ -1,3 +1,51 @@
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+
+// 波浪颜色 - 使用 ref 存储当前颜色值
+const waveColor1 = ref('')
+const waveColor2 = ref('')
+const waveColor3 = ref('')
+
+// 更新波浪颜色
+const updateWaveColors = () => {
+  const isDark = document.documentElement.classList.contains('dark')
+  if (isDark) {
+    waveColor1.value = 'rgba(0,0,0,0.7)'
+    waveColor2.value = 'rgba(0,0,0,0.5)'
+    waveColor3.value = '#000'
+  } else {
+    waveColor1.value = 'rgba(255,255,255,0.7)'
+    waveColor2.value = 'rgba(255,255,255,0.5)'
+    waveColor3.value = '#fff'
+  }
+}
+
+// 监听主题变化
+let observer = null
+
+onMounted(() => {
+  // 立即更新一次
+  updateWaveColors()
+  
+  // 监听 html 元素的 class 变化
+  observer = new MutationObserver(() => {
+    updateWaveColors()
+  })
+  
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
+  })
+})
+
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect()
+  }
+})
+</script>
+
+
 <template>
   <div class="w-full overflow-hidden leading-none">
     <!-- 波浪 SVG -->
@@ -16,45 +64,14 @@
       </defs>
 
       <g class="parallax">
-        <use :href="waveId" x="48" y="0" :fill="waveColors[0]" />
-        <use :href="waveId" x="48" y="3" :fill="waveColors[1]" />
-        <use :href="waveId" x="48" y="7" :fill="waveColors[2]" />
+        <use href="#gentle-wave" x="48" y="0" :fill="waveColor1" />
+        <use href="#gentle-wave" x="48" y="3" :fill="waveColor2" />
+        <use href="#gentle-wave" x="48" y="7" :fill="waveColor3" />
       </g>
     </svg>
   </div>
 </template>
 
-<script setup>
-import { computed } from 'vue'
-
-/** props */
-const props = defineProps({
-  mode: {
-    type: String,
-    default: 'light',
-    validator: v => ['light', 'dark'].includes(v),
-  },
-})
-
-const waveId = '#gentle-wave'
-
-/** 根据 mode 返回不同波浪颜色 */
-const waveColors = computed(() => {
-  if (props.mode === 'dark') {
-    return [
-      'rgba(0,0,0,0.7)',
-      'rgba(0,0,0,0.5)',
-      '#000',
-    ]
-  }
-  // light
-  return [
-    'rgba(255,255,255,0.7)',
-    'rgba(255,255,255,0.5)',
-    '#fff',
-  ]
-})
-</script>
 
 <style scoped>
 .parallax > use {

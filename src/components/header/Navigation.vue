@@ -1,63 +1,71 @@
 <script setup lang="ts">
 import { headerConfig } from '../../config';
 import { ref, onMounted, onUnmounted } from 'vue'
+import { initTheme, toggleTheme as toggle } from '../../scripts/theme';
 
-const props = defineProps({
-    mode: {
-        type: String,
-        default: 'light',
-        validator: (v: string) => ['light', 'dark'].includes(v),
-    },
-});
-// 主题颜色
-const darkTheme = {
-    textColor: 'text-white',
-    bgColor: 'bg-black/50', // 半透明黑色
-}
-const lightTheme = {
-    textColor: 'text-black',
-    bgColor: 'bg-white/50', // 半透明白色
+// 是否为深色模式 - 直接读取 DOM 状态
+const isDark = ref(false);
+
+// 更新主题状态
+const updateThemeState = () => {
+    isDark.value = document.documentElement.classList.contains('dark');
 }
 
+// 切换主题
+const handleToggleTheme = () => {
+    toggle();
+    updateThemeState();
+}
 
 // 监听滚动以改变导航栏样式
 const isAtTop = ref(true)
 
 const handleScroll = () => {
-    isAtTop.value = window.scrollY <= 16*4;
-    console.log('Scroll Y:', window.scrollY, 'isAtTop:', isAtTop.value);
+    isAtTop.value = window.scrollY <= 16 * 4;
 }
 
-
-
-
+// MutationObserver 监听 dark 类变化
+let observer: MutationObserver | null = null;
 
 onMounted(() => {
+    // 初始化主题
+    initTheme();
+    updateThemeState();
+    
+    // 监听 html 元素的 class 变化
+    observer = new MutationObserver(() => {
+        updateThemeState();
+    });
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+    
     window.addEventListener('scroll', handleScroll)
-    handleScroll() // 初始化时检查位置
+    handleScroll()
 })
 
 onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll)
+    observer?.disconnect();
 })
 
 </script>
 
 <template>
     <!-- 主头部 -->
-    <header class="fixed flex items-center w-screen top-0 z-50 h-16 shadow-lg px-4 transition-all duration-500 text-shadow-md" 
-    :class="[
-        mode === 'dark' ? darkTheme.textColor : lightTheme.textColor,
-        isAtTop ? 'bg-transparent shadow-none' : mode === 'dark' ? darkTheme.bgColor : lightTheme.bgColor,
-        isAtTop ? '' : 'backdrop-blur'
-    ]">
+    <header class="fixed flex items-center w-screen top-0 z-50 h-16 shadow-lg px-4 text-shadow-md text-black dark:text-white" 
+         :class="[
+            isAtTop ? 'bg-transparent shadow-none' : 'bg-white/50 dark:bg-black/50',
+            isAtTop ? '' : 'backdrop-blur'
+        ]">
         <div class="flex items-center w-7xl m-auto justify-between">
             <!-- Logo 区域 -->
             <div class="flex items-center space-x-3">
                 <a href="/" class="flex items-center space-x-2 group">
                     <div>
                         <h1
-                            class="text-2xl font-bold tracking-tight group-hover:text-amber-200 transition-colors duration-300">
+                            class="text-2xl font-bold tracking-tight group-hover:text-amber-200 transition-all duration-500">
                             {{ headerConfig.title }}
                         </h1>
                     </div>
@@ -68,7 +76,7 @@ onUnmounted(() => {
             <nav class="flex-1 flex justify-center">
                 <ul class="flex items-center space-x-1">
                     <li v-for="item in headerConfig.navLinks" :key="item.name" class="relative text-xl">
-                        <a :href="item.url" class="inline-flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-300
+                        <a :href="item.url" class="inline-flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-500
          group/nav-item relative">
                             <!-- 图标 -->
                             <span v-if="item.icon" :class="item.icon" class="inline-flex items-center justify-center"
@@ -91,12 +99,35 @@ onUnmounted(() => {
             <!-- 右侧功能区 -->
             <div class="flex items-center space-x-4">
                 <!-- 主题切换按钮 -->
-                <button class="p-2 rounded-full hover:bg-white/10 transition-colors duration-200" aria-label="切换主题">
-                    <span class="i-mdi-white-balance-sunny w-6 h-6">12</span>
+                <button
+                    class="flex items-center justify-center cursor-pointer p-2 rounded hover:bg-white/10 transition-colors duration-200 relative w-10 h-10"
+                    aria-label="切换主题" @click="handleToggleTheme">
+                    <!-- 太阳图标 (浅色模式时显示，点击切换到深色) -->
+                    <span
+                        class="icon-[line-md--sun-rising-loop] text-2xl absolute transition-all duration-300 ease-in-out"
+                        :class="[
+                            !isDark
+                                ? 'opacity-100 scale-100'
+                                : 'opacity-0 scale-0'
+                        ]"></span>
+                    <!-- 月亮图标 (深色模式时显示，点击切换到浅色) -->
+                    <span
+                        class="icon-[line-md--moon-filled-alt-loop] text-2xl absolute transition-all duration-300 ease-in-out"
+                        :class="[
+                            isDark
+                                ? 'opacity-100 scale-100'
+                                : 'opacity-0 scale-0'
+                        ]"></span>
                 </button>
             </div>
         </div>
     </header>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* 主题切换图标动画 - 避免被全局样式覆盖 */
+.icon-\[line-md--sun-rising-loop\],
+.icon-\[line-md--moon-filled-alt-loop\] {
+  transition: opacity 0.3s ease-in-out, scale 0.3s ease-in-out !important;
+}
+</style>

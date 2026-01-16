@@ -15,7 +15,7 @@ import Waves from '../Waves.vue';
             <p class="">{{ welcomeConfig.subTitle }}</p>
         </div>
         
-        <Waves mode="dark" class="absolute bottom-0 left-0 w-full"/>
+        <Waves class="absolute bottom-0 left-0 w-full"/>
     </div>
 
     
