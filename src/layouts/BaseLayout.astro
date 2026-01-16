@@ -1,0 +1,27 @@
+---
+// 引入网站配置信息、依赖
+import { siteInfo } from "../config";
+import '/src/styles/global.css';
+
+import Navigation from '../components/header/Navigation.vue';
+import Welcome from '../components/header/Welcome.vue';
+import MainContainer from '../components/MainContainer.vue';
+---
+
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={siteInfo.description}>
+		<meta name="keywords" content={siteInfo.keywords.join(", ")}>
+		<title>{siteInfo.title}</title>
+	</head>
+	<body>
+		<Navigation mode="dark" client:idle/>
+		<Welcome />
+		<MainContainer mode="dark">
+
+	</body>
+</html>

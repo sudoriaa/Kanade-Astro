@@ -1,23 +1,7 @@
 ---
-// 引入网站配置信息、依赖
-import { siteInfo } from "../config";
-import '/src/styles/global.css';
-
-import Header from '../components/Header/Header.vue';
-
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<html lang="zh-CN">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={siteInfo.description}>
-		<meta name="keywords" content={siteInfo.keywords.join(", ")}>
-		<title>{siteInfo.title}</title>
-	</head>
-	<body>
-		<Header />
-	</body>
-</html>
+<BaseLayout>
+	
+</BaseLayout>

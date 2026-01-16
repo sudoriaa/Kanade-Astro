@@ -1,23 +1,56 @@
-<!-- src/components/Header.vue -->
 <script setup lang="ts">
-// 导入配置
 import { headerConfig } from '../../config';
+import { ref, onMounted, onUnmounted } from 'vue'
 
-// 响应式状态
-import { ref } from 'vue';
+const props = defineProps({
+    mode: {
+        type: String,
+        default: 'light',
+        validator: (v: string) => ['light', 'dark'].includes(v),
+    },
+});
+// 主题颜色
+const darkTheme = {
+    textColor: 'text-white',
+    bgColor: 'bg-black/50', // 半透明黑色
+}
+const lightTheme = {
+    textColor: 'text-black',
+    bgColor: 'bg-white/50', // 半透明白色
+}
 
-// 移动端菜单状态
-const isMobileMenuOpen = ref(false);
 
-// 关闭移动端菜单
-const closeMobileMenu = () => {
-    isMobileMenuOpen.value = false;
-};
+// 监听滚动以改变导航栏样式
+const isAtTop = ref(true)
+
+const handleScroll = () => {
+    isAtTop.value = window.scrollY <= 16*4;
+    console.log('Scroll Y:', window.scrollY, 'isAtTop:', isAtTop.value);
+}
+
+
+
+
+
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll)
+    handleScroll() // 初始化时检查位置
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
+})
+
 </script>
 
 <template>
     <!-- 主头部 -->
-    <header class="fixed flex items-center w-screen top-0 z-50 h-16 bg-amber-800 text-white shadow-lg">
+    <header class="fixed flex items-center w-screen top-0 z-50 h-16 shadow-lg px-4 transition-all duration-500 text-shadow-md" 
+    :class="[
+        mode === 'dark' ? darkTheme.textColor : lightTheme.textColor,
+        isAtTop ? 'bg-transparent shadow-none' : mode === 'dark' ? darkTheme.bgColor : lightTheme.bgColor,
+        isAtTop ? '' : 'backdrop-blur'
+    ]">
         <div class="flex items-center w-7xl m-auto justify-between">
             <!-- Logo 区域 -->
             <div class="flex items-center space-x-3">
@@ -57,16 +90,6 @@ const closeMobileMenu = () => {
 
             <!-- 右侧功能区 -->
             <div class="flex items-center space-x-4">
-                <!-- 搜索框 -->
-                <div class="relative">
-                    <input type="text" placeholder="搜索..." class="w-48 pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-full
-                   text-white placeholder-white/60 focus:outline-none focus:ring-2 
-                   focus:ring-white/30 focus:border-transparent transition-all" />
-                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60">
-                        <span class="i-mdi-magnify w-5 h-5"></span>
-                    </div>
-                </div>
-
                 <!-- 主题切换按钮 -->
                 <button class="p-2 rounded-full hover:bg-white/10 transition-colors duration-200" aria-label="切换主题">
                     <span class="i-mdi-white-balance-sunny w-6 h-6"></span>
@@ -76,22 +99,4 @@ const closeMobileMenu = () => {
     </header>
 </template>
 
-<style scoped>
-/* 自定义滚动条 */
-::-webkit-scrollbar {
-    width: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-</style>
+<style scoped></style>
