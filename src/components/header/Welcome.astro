@@ -1,0 +1,18 @@
+---
+import { welcomeConfig } from '../../config'
+import Waves from '../Waves.vue';
+---
+
+<div
+  class="relative text-center h-[60dvh] flex flex-col justify-center items-center
+         bg-cover bg-center
+         before:absolute before:inset-0 before:bg-black/30 before:z-0"
+  style={`background-image: url('${welcomeConfig.bgImage}');`}
+>
+  <div class="relative z-10 flex flex-col">
+    <h1>{welcomeConfig.title}</h1>
+    <p>{welcomeConfig.subTitle}</p>
+  </div>
+
+  <Waves class="absolute bottom-0 left-0 w-full"/>
+</div>
