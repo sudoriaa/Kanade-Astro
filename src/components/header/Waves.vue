@@ -13,9 +13,9 @@
       </defs>
 
       <g class="parallax">
-        <use href="#gentle-wave" x="48" y="0" class="fill-[#fff2f2]/70 dark:fill-[#030812]/70" />
-        <use href="#gentle-wave" x="48" y="3" class="fill-[#fff2f2]/50 dark:fill-[#030812]/50" />
-        <use href="#gentle-wave" x="48" y="7" class="fill-[#fff2f2] dark:fill-[#030812]" />
+        <use href="#gentle-wave" x="48" y="0" class="wave-layer fill-[#fcf2f4]/70 dark:fill-[#030812]/70" />
+        <use href="#gentle-wave" x="48" y="3" class="wave-layer fill-[#fcf2f4]/50 dark:fill-[#030812]/50" />
+        <use href="#gentle-wave" x="48" y="7" class="wave-layer fill-[#fcf2f4] dark:fill-[#030812]" />
       </g>
 
     </svg>
@@ -24,6 +24,10 @@
 
 
 <style scoped>
+.wave-layer {
+  transition: fill 0.3s ease-in-out;
+}
+
 .parallax>use {
   animation: move-forever 12s linear infinite;
 }

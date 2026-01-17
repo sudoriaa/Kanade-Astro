@@ -4,7 +4,7 @@ import Waves from './Waves.vue';
 ---
 
 <div
-  class="relative text-center h-[60dvh] flex flex-col justify-center items-center
+  class="welcome-section relative text-center h-[60dvh] flex flex-col justify-center items-center
          bg-cover bg-center
          before:absolute before:inset-0 before:bg-black/30 before:z-0"
   style={`background-image: url('${welcomeConfig.bgImage}');`}
@@ -16,3 +16,14 @@ import Waves from './Waves.vue';
 
   <Waves class="absolute bottom-0 left-0 w-full"/>
 </div>
+
+<style>
+.welcome-section::before {
+  transition: background-color 0.3s ease-in-out;
+}
+
+.welcome-section h1,
+.welcome-section p {
+  transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+</style>

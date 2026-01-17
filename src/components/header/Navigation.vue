@@ -54,10 +54,11 @@ onUnmounted(() => {
 
 <template>
     <!-- 主头部 -->
-<header class="fixed flex items-center w-screen top-0 z-50 h-16 shadow-lg px-4 text-shadow-md transition-all duration-50" 
+    <header class="nav-header fixed flex items-center w-screen top-0 z-50 h-16 shadow-lg px-4 text-shadow-md dark:text-[#fcf2f4]" 
          :class="[
-            isAtTop ? 'bg-transparent shadow-none text-white' : 'bg-[#fff2f2]/50 dark:bg-[#030812]/50 backdrop-blur text-black dark:text-white'
-         ]">
+            isAtTop ? 'bg-transparent shadow-none text-[#fcf2f4]' : 'bg-[#fcf2f4]/50 dark:bg-black/50',
+            isAtTop ? '' : 'backdrop-blur'
+        ]">
         <div class="flex items-center w-7xl m-auto justify-between">
             <!-- Logo 区域 -->
             <div class="flex items-center space-x-3">
@@ -87,7 +88,7 @@ onUnmounted(() => {
                             </span>
 
                             <!-- 底部指示线 -->
-                            <span class="absolute bottom-1 left-1/4 right-1/4 h-0.5 bg-[#fff2f2] rounded-full
+                            <span class="absolute bottom-1 left-1/4 right-1/4 h-0.5 bg-white rounded-full
            scale-x-0 group-hover/nav-item:scale-x-100 group-hover/nav-item:left-2 group-hover/nav-item:right-2
            origin-center transition-all duration-300"></span>
                         </a>
@@ -124,7 +125,32 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* 主题切换图标动画 - 避免被全局样式覆盖 */
+/* 导航栏背景和颜色过渡 */
+.nav-header {
+  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, color 0.05s ease-in-out;
+}
+
+/* Logo 悬停效果 */
+h1 {
+  transition: color 0.5s ease-in-out;
+}
+
+/* 导航链接悬停效果 */
+nav a {
+  transition: all 0.5s ease-in-out;
+}
+
+/* 底部指示线动画 */
+nav a span:last-child {
+  transition: all 0.3s ease-in-out;
+}
+
+/* 主题切换按钮 */
+button {
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* 主题切换图标动画 */
 .icon-\[line-md--sun-rising-loop\],
 .icon-\[line-md--moon-filled-alt-loop\] {
   transition: opacity 0.3s ease-in-out, scale 0.3s ease-in-out !important;
