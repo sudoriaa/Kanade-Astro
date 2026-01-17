@@ -56,7 +56,7 @@ onUnmounted(() => {
     <!-- 主头部 -->
 <header class="fixed flex items-center w-screen top-0 z-50 h-16 shadow-lg px-4 text-shadow-md transition-all duration-50" 
          :class="[
-            isAtTop ? 'bg-transparent shadow-none text-white' : 'bg-white/50 dark:bg-black/50 backdrop-blur text-black dark:text-white'
+            isAtTop ? 'bg-transparent shadow-none text-white' : 'bg-[#fff2f2]/50 dark:bg-[#030812]/50 backdrop-blur text-black dark:text-white'
          ]">
         <div class="flex items-center w-7xl m-auto justify-between">
             <!-- Logo 区域 -->
@@ -87,7 +87,7 @@ onUnmounted(() => {
                             </span>
 
                             <!-- 底部指示线 -->
-                            <span class="absolute bottom-1 left-1/4 right-1/4 h-0.5 bg-white rounded-full
+                            <span class="absolute bottom-1 left-1/4 right-1/4 h-0.5 bg-[#fff2f2] rounded-full
            scale-x-0 group-hover/nav-item:scale-x-100 group-hover/nav-item:left-2 group-hover/nav-item:right-2
            origin-center transition-all duration-300"></span>
                         </a>
