@@ -4,7 +4,7 @@
 /* 启用基于 class 的 dark mode */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* 自定义字体 - 修复版 */
+/* 自定义字体 */
 @font-face {
   font-family: "ZaoZiGongFangYueYuan";
   src: url("/fonts/ZaoZiGongFangYueYuan.woff2") format("woff2");
@@ -21,6 +21,10 @@
   font-display: swap;
 }
 
+* {
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s, fill 0.3s;
+}
+
 
 html,
 body {
@@ -30,13 +34,14 @@ body {
   box-sizing: border-box;
 }
 
-/* 全局主题切换过渡 - 不包含 color */
-*:not(header):not(header *) {
-  transition: background-color 0.3s ease, border-color 0.3s ease, fill 0.3s ease, box-shadow 0.3s ease;
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* 导航栏过渡 - 禁用 color 过渡避免闪烁 */
-header,
-header * {
-  transition: background-color 0.3s ease, border-color 0.3s ease, fill 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, backdrop-filter 0.3s ease;
+
+/* 隐藏原生滚动条 */
+::-webkit-scrollbar {
+  display: none;
 }
+

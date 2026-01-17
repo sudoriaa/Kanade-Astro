@@ -54,11 +54,10 @@ onUnmounted(() => {
 
 <template>
     <!-- 主头部 -->
-    <header class="fixed flex items-center w-screen top-0 z-50 h-16 shadow-lg px-4 text-shadow-md text-black dark:text-white" 
+<header class="fixed flex items-center w-screen top-0 z-50 h-16 shadow-lg px-4 text-shadow-md transition-all duration-50" 
          :class="[
-            isAtTop ? 'bg-transparent shadow-none' : 'bg-white/50 dark:bg-black/50',
-            isAtTop ? '' : 'backdrop-blur'
-        ]">
+            isAtTop ? 'bg-transparent shadow-none text-white' : 'bg-white/50 dark:bg-black/50 backdrop-blur text-black dark:text-white'
+         ]">
         <div class="flex items-center w-7xl m-auto justify-between">
             <!-- Logo 区域 -->
             <div class="flex items-center space-x-3">

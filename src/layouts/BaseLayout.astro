@@ -6,6 +6,7 @@ import '/src/styles/global.css';
 import Navigation from '../components/header/Navigation.vue';
 import Welcome from '../components/header/Welcome.astro';
 import MainContainer from '../components/MainContainer.vue';
+import CustomScrollbar from '../components/CustomScrollbar.vue';
 ---
 
 <html lang="zh-CN">
@@ -30,6 +31,7 @@ import MainContainer from '../components/MainContainer.vue';
 		</script>
 	</head>
 	<body>
+		<CustomScrollbar client:load />
 		<Navigation client:load/>
 		<Welcome client:load/>
 		<MainContainer>
