@@ -54,9 +54,9 @@ onUnmounted(() => {
 
 <template>
     <!-- 主头部 -->
-    <header class="nav-header fixed flex items-center w-screen top-0 z-50 h-16 shadow-lg px-4 text-shadow-md dark:text-[#fcf2f4]" 
+    <header class="nav-header fixed flex items-center w-screen top-0 z-50 h-16 shadow-lg px-4 text-shadow-md dark:text-kanadelight" 
          :class="[
-            isAtTop ? 'bg-transparent shadow-none text-[#fcf2f4]' : 'bg-[#fcf2f4]/50 dark:bg-black/50',
+            isAtTop ? 'bg-transparent shadow-none text-kanadelight' : 'bg-kanadelight/50 dark:bg-kanadedark/50',
             isAtTop ? '' : 'backdrop-blur'
         ]">
         <div class="flex items-center w-7xl m-auto justify-between">
@@ -88,7 +88,7 @@ onUnmounted(() => {
                             </span>
 
                             <!-- 底部指示线 -->
-                            <span class="absolute bottom-1 left-1/4 right-1/4 h-0.5 bg-white rounded-full
+                            <span class="absolute bottom-1 left-1/4 right-1/4 h-0.5 bg-kanadelight rounded-full
            scale-x-0 group-hover/nav-item:scale-x-100 group-hover/nav-item:left-2 group-hover/nav-item:right-2
            origin-center transition-all duration-300"></span>
                         </a>
@@ -100,7 +100,7 @@ onUnmounted(() => {
             <div class="flex items-center space-x-4">
                 <!-- 主题切换按钮 -->
                 <button
-                    class="flex items-center justify-center cursor-pointer p-2 rounded hover:bg-white/10 transition-colors duration-200 relative w-10 h-10"
+                    class="flex items-center justify-center cursor-pointer p-2 rounded hover:bg-kanadelight/10 transition-colors duration-200 relative w-10 h-10"
                     aria-label="切换主题" @click="handleToggleTheme">
                     <!-- 太阳图标 (浅色模式时显示，点击切换到深色) -->
                     <span
@@ -127,7 +127,7 @@ onUnmounted(() => {
 <style scoped>
 /* 导航栏背景和颜色过渡 */
 .nav-header {
-  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, color 0.05s ease-in-out;
+  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
 /* Logo 悬停效果 */

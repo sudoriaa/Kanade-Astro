@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @plugin "@iconify/tailwind4";
 
+/* 自定义颜色 */
+@theme {
+  --color-kanadelight: #fff2f2;
+  --color-kanadedark: #030812;
+}
+
 /* 启用基于 class 的 dark mode */
 @custom-variant dark (&:where(.dark, .dark *));
 
