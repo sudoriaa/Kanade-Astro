@@ -5,7 +5,7 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <!-- 主要内容区域，flex-1让它占据剩余空间 -->
-    <div class="main-container flex-1 relative text-kanadedark bg-kanadelight dark:bg-kanadedark dark:text-kanadelight"
+    <div class="main-container flex-1 relative text-kanadeDark bg-kanadeLight dark:bg-kanadeDark dark:text-kanadeLight"
     >
       <slot />
     </div>

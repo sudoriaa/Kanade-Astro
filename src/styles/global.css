@@ -3,8 +3,17 @@
 
 /* 自定义颜色 */
 @theme {
-  --color-kanadelight: #fff2f2;
-  --color-kanadedark: #030812;
+  --color-kanadeLight: #fff1f1;
+  --color-kanadeDark: #030812;
+  --color-kanadeBoxLight: #fff;
+  --color-kanadeBoxDark: #1f2937;
+
+  --color-subBoxLight: #ffe8eb;
+  --color-subTextLight: #ff96a7;
+  --color-subBoxDark: #264966;
+  --color-subTextDark: #eff8ff;
+
+  --font-Oxanium-Medium: "Oxanium-Medium", "ZaoZiGongFangYueYuan";
 }
 
 /* 启用基于 class 的 dark mode */
@@ -20,8 +29,8 @@
 }
 
 @font-face {
-  font-family: "ZaoZiGongFangYueYuan";
-  src: url("/fonts/ZaoZiGongFangYueYuan.woff2") format("woff2");
+  font-family: "Oxanium-Medium";
+  src: url("/fonts/Oxanium-Medium.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;

@@ -1,10 +1,21 @@
 ---
-import LeftSideBar from '../components/home/LeftSideBar.vue';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import PersonalCard from "../components/home/PersonalCard.vue";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout>
-    <div class="flex justify-center max-w-7xl">
-        <LeftSideBar />
+  <div class="flex mt-10 justify-center w-full">
+    <div class="flex w-360 m-auto gap-4 p-4">
+      <div class="flex flex-col w-1/5">
+        <PersonalCard />
+      </div>
+      <div class="flex flex-col flex-1">
+        <PersonalCard />
+      </div>
+
+      <div class="flex flex-col w-1/4">
+        <PersonalCard />
+      </div>
     </div>
+  </div>
 </BaseLayout>

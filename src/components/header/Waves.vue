@@ -13,9 +13,9 @@
       </defs>
 
       <g class="parallax">
-        <use href="#gentle-wave" x="48" y="0" class="wave-layer fill-kanadelight/70 dark:fill-kanadedark/70" />
-        <use href="#gentle-wave" x="48" y="3" class="wave-layer fill-kanadelight/50 dark:fill-kanadedark/50" />
-        <use href="#gentle-wave" x="48" y="7" class="wave-layer fill-kanadelight dark:fill-kanadedark" />
+        <use href="#gentle-wave" x="48" y="0" class="wave-layer fill-kanadeLight/70 dark:fill-kanadeDark/70" />
+        <use href="#gentle-wave" x="48" y="3" class="wave-layer fill-kanadeLight/50 dark:fill-kanadeDark/50" />
+        <use href="#gentle-wave" x="48" y="7" class="wave-layer fill-kanadeLight dark:fill-kanadeDark" />
       </g>
 
     </svg>

@@ -30,3 +30,16 @@ export const welcomeConfig = {
     subTitle: "这是一个由 Astro 构建的博客网站。",
     bgImage: "https://img2.huashi6.com/images/resource/thumbnail/2025/02/09/23269_76985257670.jpg?imageMogr2/quality/75/interlace/1/thumbnail/x942/gravity/Center/crop/1400x942/format/webp%7Cwatermark/2/text/6Kem56uZQFpVVQ/gravity/South/fill/I2ZmZmZmZg/fontsize/400/font/5b6u6L2v6ZuF6buR/dy/20",
 }
+
+// ---- 个人信息配置 ---- //
+export const personalInfo = {
+    name: "Sudoria",
+    avatar: "/src/assets/avatar.png",
+    bio: "热爱编程与技术分享的开发者。",
+    socialLinks: [
+        { icon: "icon-[jam--github]", url: "https://github.com/sudoriaa"  },
+        { icon: "icon-[jam--github]", url: "https://github.com/sudoria"  },
+        { icon: "icon-[jam--github]", url: "https://github.com/sudori"  },
+        { icon: "icon-[jam--github]", url: "https://github.com/sudor"  },
+]
+}
