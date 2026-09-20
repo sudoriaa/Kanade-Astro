@@ -1,12 +1,16 @@
 # Astro 官方主题目录提交材料
 
-当前状态：公网演示已部署，模板源码与预览图已推送；官方目录申请尚未提交。
+当前状态：2026-09-20 已成功提交到 Astro 官方主题目录，后台状态为 Pending（待审核）。官方提示提交成功，审核通过后才会向其他用户公开。
 
 ## 提交入口
 
 https://portal.astro.build/themes/submit
 
-提交成功后需要等待 Astro 官方审核。表单说明：通常每周五处理申请。
+已提交的主题管理页：https://portal.astro.build/themes/kanade/
+
+官方回执：Submitted theme! We'll review it soon!
+
+表单说明：通常每周五处理申请。
 
 ## 表单内容
 
