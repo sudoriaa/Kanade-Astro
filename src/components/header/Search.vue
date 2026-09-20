@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { withBase } from "../../lib/urls";
 import { ref, computed, onMounted, onUnmounted, nextTick } from "vue";
 import type { PostSummary } from "../../lib/posts";
 const props = defineProps<{ posts: PostSummary[] }>();
@@ -42,7 +43,7 @@ onUnmounted(() => {
       <div class="search-field"><span class="icon-[lucide--search]"></span><input ref="input" v-model="query" type="search" placeholder="搜索文章、分类或标签…" aria-label="搜索关键词" /><kbd>ESC</kbd></div>
       <p class="search-meta" aria-live="polite">{{ query.trim() ? `找到 ${results.length} 篇文章` : "最近的文字" }}</p>
       <div class="search-results">
-        <a v-for="post in results" :key="post.id" :href="`/posts/${post.id}/`" class="search-result"><span class="result-icon icon-[lucide--file-text]"></span><div><strong>{{ post.title }}</strong><p>{{ post.category }} · {{ post.date }}</p></div><span class="icon-[lucide--arrow-up-right]"></span></a>
+        <a v-for="post in results" :key="post.id" :href="withBase(`/posts/${post.id}/`)" class="search-result"><span class="result-icon icon-[lucide--file-text]"></span><div><strong>{{ post.title }}</strong><p>{{ post.category }} · {{ post.date }}</p></div><span class="icon-[lucide--arrow-up-right]"></span></a>
         <div v-if="!results.length" class="empty-state"><span class="icon-[lucide--search-x]"></span><h3>还没有找到这段文字</h3><p>试试「Astro」「CSS」或「生活」。</p></div>
       </div>
       <div class="search-footer">用文字连接每一个灵感 <span>Ctrl / ⌘ K 打开 · ESC 关闭</span></div>

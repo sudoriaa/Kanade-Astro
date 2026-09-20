@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { withBase } from "../../lib/urls";
 import { ref, onMounted, onUnmounted } from "vue";
 import { headerConfig } from "../../config";
 import { initTheme, toggleTheme } from "../../scripts/theme";
@@ -6,7 +7,7 @@ const props = defineProps<{ pathname: string }>();
 const isDark = ref(false);
 const isAtTop = ref(true);
 const menuOpen = ref(false);
-const active = (url: string) => url === "/" ? props.pathname === "/" : props.pathname.startsWith(url);
+const active = (url: string) => url === withBase("/") ? props.pathname === withBase("/") : props.pathname.startsWith(url);
 const handleScroll = () => { isAtTop.value = window.scrollY < 48; };
 const toggle = () => { isDark.value = toggleTheme() === "dark"; };
 const openSearch = () => { menuOpen.value = false; window.dispatchEvent(new Event("kanade:search")); };
@@ -26,7 +27,7 @@ onUnmounted(() => {
 <template>
   <header class="nav-header" :class="{ scrolled: !isAtTop, 'menu-open': menuOpen }">
     <div class="nav-inner shell">
-      <a href="/" class="brand" aria-label="Kanade 首页"><span class="brand-flower">✿</span>{{ headerConfig.title }}<span class="brand-dot">.</span></a>
+      <a :href="withBase('/')" class="brand" aria-label="Kanade 首页"><span class="brand-flower">✿</span>{{ headerConfig.title }}<span class="brand-dot">.</span></a>
       <nav aria-label="主导航" :class="{ expanded: menuOpen }" id="main-navigation">
         <a v-for="item in headerConfig.navLinks" :key="item.url" :href="item.url" :aria-current="active(item.url) ? 'page' : undefined" :class="{ active: active(item.url) }">
           <span :class="item.icon" aria-hidden="true"></span><span>{{ item.name }}</span>

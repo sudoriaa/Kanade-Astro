@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../../lib/urls";
 import type { PostSummary } from "../../lib/posts";
 interface Props { posts: PostSummary[] }
 const { posts } = Astro.props;
@@ -9,15 +10,15 @@ const months = [...new Set(posts.map(p => p.date.slice(0, 7)))];
     <h2 class="panel-title"><span class="icon-[lucide--megaphone]" aria-hidden="true"></span>小站公告<span class="notice-dot"></span></h2>
     <p>嗨，欢迎来到我的小小世界 <span class="accent">✿</span></p>
     <p>这里有代码，有日常，也有一些天马行空的想法。希望你能在这里找到一点共鸣。</p>
-    <a href="/about/" class="text-link">认识一下我<span class="icon-[lucide--arrow-right]" aria-hidden="true"></span></a>
+    <a href={withBase("/about/")} class="text-link">认识一下我<span class="icon-[lucide--arrow-right]" aria-hidden="true"></span></a>
   </section>
   <section class="card panel recent-panel">
     <h2 class="panel-title"><span class="icon-[lucide--clock-3]" aria-hidden="true"></span>最近更新</h2>
-    <ol>{posts.slice(0, 4).map((post, index) => <li><span class="recent-number">{String(index + 1).padStart(2, "0")}</span><a href={`/posts/${post.id}/`}><h3>{post.title}</h3><time datetime={post.date}>{post.date.replaceAll("-", ".")}</time></a></li>)}</ol>
+    <ol>{posts.slice(0, 4).map((post, index) => <li><span class="recent-number">{String(index + 1).padStart(2, "0")}</span><a href={withBase(`/posts/${post.id}/`)}><h3>{post.title}</h3><time datetime={post.date}>{post.date.replaceAll("-", ".")}</time></a></li>)}</ol>
   </section>
   <section class="card panel archive-panel">
     <h2 class="panel-title"><span class="icon-[lucide--calendar-days]" aria-hidden="true"></span>时光归档</h2>
-    {months.map(month => <a href={`/posts/?month=${month}`}><span>{month.replace("-", " 年 ")} 月</span><span>{posts.filter(p => p.date.startsWith(month)).length} 篇</span></a>)}
+    {months.map(month => <a href={withBase(`/posts/?month=${month}`)}><span>{month.replace("-", " 年 ")} 月</span><span>{posts.filter(p => p.date.startsWith(month)).length} 篇</span></a>)}
   </section>
   <section class="card quote-card"><span class="quote-mark">“</span><p>日子很长，<br />要把喜欢的事，<br />慢慢做。</p><span class="quote-source">A LITTLE REMINDER</span><span class="quote-flower" aria-hidden="true">✿</span></section>
   <section class="site-notes"><span class="icon-[lucide--sprout]" aria-hidden="true"></span><p>小站正在慢慢生长中</p><span>记录 · 分享 · 保持好奇</span></section>

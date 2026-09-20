@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../../lib/urls";
 import { render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PersonalCard from "../../components/home/PersonalCard.vue";
@@ -19,23 +20,23 @@ const older = posts[index + 1];
   <div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
   <div class="shell article-layout">
     <article class="card article-detail">
-      <a href="/posts/" class="text-link"><span class="icon-[lucide--arrow-left]" aria-hidden="true"></span>返回所有文章</a>
+      <a href={withBase("/posts/")} class="text-link"><span class="icon-[lucide--arrow-left]" aria-hidden="true"></span>返回所有文章</a>
       <header class="article-header">
-        <a class="chip" href={`/posts/?category=${encodeURIComponent(post.data.category)}`}>{post.data.category}</a>
+        <a class="chip" href={withBase(`/posts/?category=${encodeURIComponent(post.data.category)}`)}>{post.data.category}</a>
         <h1>{post.data.title}</h1>
-        <div class="article-meta"><img src="/images/sudoria.jpg" alt="" width="25" height="25" /><span>苏多莉亚</span><span>·</span><time datetime={summary.date}>{summary.date}</time><span>·</span><span>约 {summary.minutes} 分钟</span></div>
+        <div class="article-meta"><img src={withBase("/images/avatar.svg")} alt="" width="25" height="25" /><span>示例作者</span><span>·</span><time datetime={summary.date}>{summary.date}</time><span>·</span><span>约 {summary.minutes} 分钟</span></div>
         <p>{post.data.description}</p>
       </header>
       <div class="article-cover"><PostCover kind={post.data.cover} featured={post.data.featured} /></div>
       <details class="mobile-toc"><summary>文章目录</summary><ol>{headings.filter(h => h.depth <= 3).map(h => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol></details>
       <div class="prose" id="article-body"><Content /></div>
       <div class="article-ending"><span>✿</span><p>感谢读到这里，愿这些文字对你有所帮助。</p></div>
-      <div class="article-tools"><div class="article-tags">{post.data.tags.map(tag => <a class="chip" href={`/posts/?tag=${encodeURIComponent(tag)}`}># {tag}</a>)}</div><button id="share-post" class="btn secondary"><span class="icon-[lucide--link]" aria-hidden="true"></span>复制文章链接</button></div>
+      <div class="article-tools"><div class="article-tags">{post.data.tags.map(tag => <a class="chip" href={withBase(`/posts/?tag=${encodeURIComponent(tag)}`)}># {tag}</a>)}</div><button id="share-post" class="btn secondary"><span class="icon-[lucide--link]" aria-hidden="true"></span>复制文章链接</button></div>
       <p id="share-status" role="status" class="share-status"></p>
-      <div class="author-note"><img src="/images/sudoria.jpg" alt="苏多莉亚" width="44" height="44" /><div><strong>苏多莉亚 <span class="accent">/ Sudoria</span></strong><p>写一点代码，记录一点生活。欢迎来<a href="/messages/">留言板</a>聊聊。</p></div></div>
+      <div class="author-note"><img src={withBase("/images/avatar.svg")} alt="示例作者" width="44" height="44" /><div><strong>示例作者 <span class="accent">/ Kanade Author</span></strong><p>写一点代码，记录一点生活。欢迎来<a href={withBase("/messages/")}>留言板</a>聊聊。</p></div></div>
       <nav class="adjacent-posts" aria-label="相邻文章">
-        {newer ? <a href={`/posts/${newer.id}/`}><span>← 上一篇</span><strong>{newer.title}</strong></a> : <div></div>}
-        {older && <a href={`/posts/${older.id}/`}><span>下一篇 →</span><strong>{older.title}</strong></a>}
+        {newer ? <a href={withBase(`/posts/${newer.id}/`)}><span>← 上一篇</span><strong>{newer.title}</strong></a> : <div></div>}
+        {older && <a href={withBase(`/posts/${older.id}/`)}><span>下一篇 →</span><strong>{older.title}</strong></a>}
       </nav>
     </article>
     <aside class="article-sidebar">

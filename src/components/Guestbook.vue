@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { withBase } from "../lib/urls";
 import { ref, computed, onMounted, nextTick } from "vue";
 
 const paperColors = [
@@ -138,7 +139,7 @@ function tilt(id: string) { return `${[-1.8, 1.2, -0.8, 1.7, -1.1][hash(id) % 5]
               <span class="paper-tape" aria-hidden="true"></span>
               <span class="note-hello">小站寄语 <span aria-hidden="true">♡</span></span>
               <div class="message-main"><h4>很高兴，在这里遇见你。</h4><p>一句问候，一个愿望，<br />或是今天遇见的小确幸。<br /><br />把想说的话留在这里，<br />让平凡的一天多一点颜色。</p></div>
-              <footer class="note-footer"><div class="note-author"><img src="/images/sudoria.jpg" alt="" width="24" height="24" /><strong>苏多莉亚</strong></div><span>欢迎路过 <span aria-hidden="true">✿</span></span></footer>
+              <footer class="note-footer"><div class="note-author"><img :src="withBase('/images/avatar.svg')" alt="" width="24" height="24" /><strong>示例作者</strong></div><span>欢迎路过 <span aria-hidden="true">✿</span></span></footer>
               <span class="paper-fold" aria-hidden="true"></span>
             </article>
             <article v-if="!messages.length" class="sticky-note paper inspiration-note" data-color="mint" style="--tilt: 1.6deg" aria-label="写作灵感">

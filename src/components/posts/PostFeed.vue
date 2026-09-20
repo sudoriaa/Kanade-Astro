@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { withBase } from "../../lib/urls";
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import type { PostSummary } from "../../lib/posts";
 import PostCover from "./PostCover.vue";
@@ -57,12 +58,12 @@ onUnmounted(() => window.removeEventListener("popstate", readUrl));
     <div v-if="tag || month || (category && !categoryNames.includes(category))" class="filter-summary"><span>正在浏览：{{ tag || month || category }}</span><button @click="reset">清除筛选 ×</button></div>
     <div class="post-list" aria-live="polite">
       <article v-for="post in displayed" :key="post.id" class="post-card card" :data-category="post.category">
-        <a :href="`/posts/${post.id}/`" class="cover-link" :aria-label="`阅读：${post.title}`" tabindex="-1"><PostCover :kind="post.cover" :featured="post.featured" /></a>
+        <a :href="withBase(`/posts/${post.id}/`)" class="cover-link" :aria-label="`阅读：${post.title}`" tabindex="-1"><PostCover :kind="post.cover" :featured="post.featured" /></a>
         <div class="post-info">
-          <div class="post-kicker"><span v-if="post.featured" class="pin"><span class="icon-[lucide--pin]"></span>置顶</span><a :href="`/posts/?category=${encodeURIComponent(post.category)}`">{{ post.category }}</a><span class="meta-divider">/</span><time :datetime="post.date">{{ post.date.replaceAll("-", ".") }}</time></div>
-          <h3><a :href="`/posts/${post.id}/`">{{ post.title }}</a></h3>
+          <div class="post-kicker"><span v-if="post.featured" class="pin"><span class="icon-[lucide--pin]"></span>置顶</span><a :href="withBase(`/posts/?category=${encodeURIComponent(post.category)}`)">{{ post.category }}</a><span class="meta-divider">/</span><time :datetime="post.date">{{ post.date.replaceAll("-", ".") }}</time></div>
+          <h3><a :href="withBase(`/posts/${post.id}/`)">{{ post.title }}</a></h3>
           <p class="post-description">{{ post.description }}</p>
-          <div class="post-bottom"><div class="post-tags"><a v-for="item in post.tags.slice(0, 2)" :key="item" :href="`/posts/?tag=${encodeURIComponent(item)}`"># {{ item }}</a></div><a class="read-post" :href="`/posts/${post.id}/`" :aria-label="`阅读全文：${post.title}`">{{ post.minutes }} 分钟<span class="icon-[lucide--arrow-up-right]"></span></a></div>
+          <div class="post-bottom"><div class="post-tags"><a v-for="item in post.tags.slice(0, 2)" :key="item" :href="withBase(`/posts/?tag=${encodeURIComponent(item)}`)"># {{ item }}</a></div><a class="read-post" :href="withBase(`/posts/${post.id}/`)" :aria-label="`阅读全文：${post.title}`">{{ post.minutes }} 分钟<span class="icon-[lucide--arrow-up-right]"></span></a></div>
         </div>
       </article>
       <div v-if="!displayed.length" class="empty-state card"><span class="icon-[lucide--notebook]"></span><h3>这一页，还等着新的故事</h3><p>没有匹配的文章，换个关键词试试吧。</p><button class="btn secondary" @click="reset">查看全部文章</button></div>

@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../lib/urls";
 import { siteInfo } from "../config";
 import "../styles/global.css";
 import Navigation from "../components/header/Navigation.vue";
@@ -16,7 +17,7 @@ const canonical = new URL(Astro.url.pathname, siteInfo.url);
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={withBase("/favicon.svg")} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
@@ -26,10 +27,10 @@ const canonical = new URL(Astro.url.pathname, siteInfo.url);
     <meta property="og:description" content={description} />
     <meta property="og:type" content={article ? "article" : "website"} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL("/images/hero.webp", siteInfo.url)} />
+    <meta property="og:image" content={new URL(withBase("/images/hero.webp"), siteInfo.url)} />
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" type="application/rss+xml" title="Kanade RSS" href="/rss.xml" />
-    <link rel="preload" href="/fonts/ZaoZiGongFangYueYuan.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="alternate" type="application/rss+xml" title="Kanade RSS" href={withBase("/rss.xml")} />
+    <link rel="preload" href={withBase("/fonts/ZaoZiGongFangYueYuan.woff2")} as="font" type="font/woff2" crossorigin />
     <title>{pageTitle}</title>
     <script is:inline>
       (() => {
@@ -48,9 +49,9 @@ const canonical = new URL(Astro.url.pathname, siteInfo.url);
       <main id="main-content" tabindex="-1"><slot /></main>
     </MainContainer>
     <footer class="site-footer">
-      <a href="/" class="footer-mark"><span class="accent">✿</span> Kanade.</a>
+      <a href={withBase("/")} class="footer-mark"><span class="accent">✿</span> Kanade.</a>
       <p>在这里，记录每一次心动与成长。</p>
-      <p>© {new Date().getFullYear()} Sudoria · Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> &amp; <span class="accent">♥</span> · <a href="/rss.xml">RSS 订阅</a> · <a href="/about/">关于本站</a></p>
+      <p>© {new Date().getFullYear()} Kanade Author · Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> &amp; <span class="accent">♥</span> · <a href={withBase("/rss.xml")}>RSS 订阅</a> · <a href={withBase("/about/")}>关于本站</a></p>
     </footer>
     <button class="back-top" id="back-top" aria-label="回到顶部" hidden><span class="icon-[lucide--arrow-up]"></span></button>
     <script>

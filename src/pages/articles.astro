@@ -1,3 +1,4 @@
 ---
-return Astro.redirect("/posts/", 301);
+import { withBase } from "../lib/urls";
+return Astro.redirect(withBase("/posts/"), 301);
 ---

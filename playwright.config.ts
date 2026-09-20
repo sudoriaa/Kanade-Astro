@@ -16,7 +16,7 @@ export default defineConfig({
     { name: "mobile", use: { ...devices["iPhone 13"], defaultBrowserType: "chromium" } },
   ],
   webServer: {
-    command: "pnpm exec astro preview --host 127.0.0.1 --port 4173",
+    command: "pnpm exec astro preview --host 127.0.0.1 --port 4173 --ignore-lock",
     url: "http://127.0.0.1:4173",
     reuseExistingServer: !process.env.CI,
     timeout: 30000,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { withBase } from "../../lib/urls";
 import { personalInfo } from "../../config";
 import { getTags, type PostSummary } from "../../lib/posts";
 const props = defineProps<{ posts: PostSummary[] }>();
@@ -6,10 +7,10 @@ const props = defineProps<{ posts: PostSummary[] }>();
 <template>
   <section class="card profile-card">
     <div class="profile-top"><span class="profile-flower">✿</span><span class="eyebrow">NICE TO MEET YOU</span><span class="profile-spark">✧</span></div>
-    <a href="/about/" class="avatar-link"><img :src="personalInfo.avatar" :alt="personalInfo.name" width="80" height="80" /><span class="online-dot" title="持续记录中"></span></a>
+    <a :href="withBase('/about/')" class="avatar-link"><img :src="personalInfo.avatar" :alt="personalInfo.name" width="80" height="80" /><span class="online-dot" title="持续记录中"></span></a>
     <h2>{{ personalInfo.name }}</h2><p class="profile-role">{{ personalInfo.role }}</p>
     <p class="profile-bio">{{ personalInfo.bio }}</p>
-    <div class="profile-stats"><a href="/posts/"><strong>{{ posts.length }}</strong><span>文章</span></a><a href="/posts/"><strong>{{ new Set(posts.map(p => p.category)).size }}</strong><span>分类</span></a><a href="/posts/#tags"><strong>{{ getTags(props.posts).length }}</strong><span>标签</span></a></div>
+    <div class="profile-stats"><a :href="withBase('/posts/')"><strong>{{ posts.length }}</strong><span>文章</span></a><a :href="withBase('/posts/')"><strong>{{ new Set(posts.map(p => p.category)).size }}</strong><span>分类</span></a><a :href="withBase('/posts/#tags')"><strong>{{ getTags(props.posts).length }}</strong><span>标签</span></a></div>
     <div class="profile-social"><a v-for="link in personalInfo.socialLinks" :key="link.url" :href="link.url" :target="link.url.startsWith('https') ? '_blank' : undefined" rel="noopener noreferrer" :aria-label="link.name" :title="link.name"><span :class="link.icon"></span></a></div>
     <div class="profile-status"><span></span>保持热爱，奔赴下一场山海</div>
   </section>

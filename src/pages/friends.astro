@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../lib/urls";
 import BlogLayout from "../layouts/BlogLayout.astro";
 import { friends } from "../data/friends";
 ---
@@ -9,8 +10,8 @@ import { friends } from "../data/friends";
     <div class="section-rule"></div>
     <h3 class="panel-title"><span class="icon-[lucide--link]" aria-hidden="true"></span>关于交换友链</h3>
     <p class="friend-copy">欢迎同样喜欢记录、持续更新的个人博客。如果想认识我，可以在 GitHub 上找到我，分享你的小站和一段简短的介绍。</p>
-    <div class="site-intro"><span>站点名称</span><strong>Kanade</strong><span>站点描述</span><strong>记录热爱与日常的个人博客</strong><span>站点头像</span><a href="/images/sudoria.jpg">查看头像 ↗</a></div>
-    <a class="btn secondary" href="https://github.com/sudoriaa" target="_blank" rel="noopener noreferrer"><span class="icon-[jam--github]" aria-hidden="true"></span>在 GitHub 找到我</a>
+    <div class="site-intro"><span>站点名称</span><strong>Kanade</strong><span>站点描述</span><strong>记录热爱与日常的个人博客</strong><span>站点头像</span><a href={withBase("/images/avatar.svg")}>查看头像 ↗</a></div>
+    <a class="btn secondary" href="https://github.com" target="_blank" rel="noopener noreferrer"><span class="icon-[jam--github]" aria-hidden="true"></span>在 GitHub 找到我</a>
   </section>
 </BlogLayout>
 <style>

@@ -2,11 +2,11 @@
 
 # Kanade · 奏
 
-一个记录热爱与日常的个人博客。
+一个记录热爱与日常的 Astro 7 博客模板。
 
 基于 Astro、Vue 和 Tailwind CSS 构建，以插画首屏、粉色圆角卡片和轻盈波浪，收藏代码、灵感与生活。
 
-[项目仓库](https://github.com/sudoriaa/Kanade-Astro) · [快速开始](#快速开始) · [文章写作](#文章写作) · [部署指南](#部署指南)
+[模板源码](https://github.com/sudoriaa/Kanade-Astro/tree/codex/astro-theme) · [在线演示](https://sudoriaa.github.io/Kanade-Astro/) · [快速开始](#快速开始) · [文章写作](#文章写作) · [部署指南](#部署指南)
 
 </div>
 
@@ -14,9 +14,9 @@
 
 ![Kanade 桌面端首页](docs/images/home.png)
 
-桌面端采用「个人信息与分类 / 文章列表 / 站点动态」三栏布局；手机端聚焦文章阅读，导航收起为菜单。内置浅色与深色主题，保留原有头像、字体和首屏插画。
+桌面端采用「个人信息与分类 / 文章列表 / 站点动态」三栏布局；手机端聚焦文章阅读，导航收起为菜单。内置浅色与深色主题，保留本地字体和首屏插画，使用通用示例作者与花朵头像。
 
-留言页使用独立的彩色便签墙布局，左侧写便签，右侧收藏心情。下图中的访客便签为展示样例。
+留言页使用独立的彩色便签墙布局，左侧写便签，右侧收藏心情。下图为模板默认的空墙状态。
 
 ![Kanade 彩色留言墙](docs/images/message-wall.png)
 
@@ -38,7 +38,7 @@
 
 | 技术 | 用途 |
 | --- | --- |
-| Astro 5 | 页面路由、内容集合与静态构建 |
+| Astro 7 | 页面路由、内容集合与静态构建 |
 | Vue 3 | 搜索、筛选、导航和留言等交互组件 |
 | Tailwind CSS 4 | 样式工具与主题基础 |
 | TypeScript 5 | 类型约束与静态检查 |
@@ -53,7 +53,7 @@
 准备 Node.js 22.12 或更高版本，以及 pnpm 10。
 
 ```sh
-git clone https://github.com/sudoriaa/Kanade-Astro.git
+git clone --branch codex/astro-theme https://github.com/sudoriaa/Kanade-Astro.git
 cd Kanade-Astro
 pnpm install --frozen-lockfile
 pnpm dev
@@ -189,12 +189,12 @@ draft: false
 将 `.env.example` 复制为 `.env`，填写最终域名：
 
 ```dotenv
-SITE_URL=https://your-blog.example
+SITE_URL=https://example.com
 ```
 
 也可以直接在托管平台设置同名环境变量。修改后重新构建，RSS、站点地图、canonical 和 Open Graph 中的地址会随之更新。未设置时默认使用 `http://localhost:4321`。
 
-当前路由和资源使用根路径，适合部署在独立域名或子域名的根目录。若使用 `/Kanade-Astro/` 这类子路径，需要同时调整 Astro 的基础路径、页面链接与资源引用。
+模板支持独立域名及仓库子路径。对于 `/Kanade-Astro/` 这类子路径，将 SITE_URL 设为包含该路径的完整地址即可；SITE_BASE 可选，用于覆盖自动推导的路径。
 
 ### 本地预览
 
@@ -246,6 +246,16 @@ Stop-Process -Id <进程ID>
 - `/robots.txt`：爬虫规则。
 - 任意不存在的路径：站点 404 页面。
 
+
+### GitHub Pages 演示
+
+在线演示：https://sudoriaa.github.io/Kanade-Astro/
+
+本分支是用于官方模板目录的通用演示版本；main 分支保留原来的个人博客。克隆时请选择 codex/astro-theme 分支，以获得与在线演示一致的内容。
+
+仓库提供 .github/workflows/deploy.yml，负责安装依赖、类型检查、构建及部署。使用自己的仓库时，在 Settings → Pages 中选择 GitHub Actions。工作流会根据仓库自动设置 SITE_URL 和 SITE_BASE；本地开发仍默认使用根路径。
+
+首次使用时替换示例作者、社交链接和演示文章。目录页的展示截图与此分支实际输出保持一致。
 ## 检查与测试
 
 ```sh
@@ -284,7 +294,7 @@ pnpm test
 ## 素材与致谢
 
 - 首屏插画沿用原项目配置中的[图片资源](https://img2.huashi6.com/images/resource/thumbnail/2025/02/09/23269_76985257670.jpg)，保留图中的原作者标记，并存放为本地文件。
-- 头像及「造字工房悦圆」「Oxanium」字体沿用原仓库。
+- 「造字工房悦圆」「Oxanium」字体沿用原仓库；模板默认头像为随项目提供的花朵 SVG。
 - 感谢 Astro、Vue、Tailwind CSS、Iconify 和 Playwright 等开源项目。
 
 愿每一份热爱，都有一个安放的地方。

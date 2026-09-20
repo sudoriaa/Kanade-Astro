@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../../lib/urls";
 import PersonalCard from "./PersonalCard.vue";
 import { categories, getTags, type PostSummary } from "../../lib/posts";
 interface Props { posts: PostSummary[] }
@@ -9,13 +10,13 @@ const tags = getTags(posts);
   <PersonalCard posts={posts} />
   <section class="card panel category-panel">
     <h2 class="panel-title"><span class="icon-[lucide--folder-open]" aria-hidden="true"></span>文章分类</h2>
-    {categories.map((category, index) => <a href={`/posts/?category=${encodeURIComponent(category)}`}><span><span class={["icon-[lucide--code-xml]", "icon-[lucide--notebook-pen]", "icon-[lucide--coffee]"][index]} aria-hidden="true"></span>{category}</span><span class="category-count">{posts.filter(post => post.category === category).length.toString().padStart(2, "0")}</span></a>)}
+    {categories.map((category, index) => <a href={withBase(`/posts/?category=${encodeURIComponent(category)}`)}><span><span class={["icon-[lucide--code-xml]", "icon-[lucide--notebook-pen]", "icon-[lucide--coffee]"][index]} aria-hidden="true"></span>{category}</span><span class="category-count">{posts.filter(post => post.category === category).length.toString().padStart(2, "0")}</span></a>)}
   </section>
   <section class="card panel" id="tags">
     <h2 class="panel-title"><span class="icon-[lucide--tags]" aria-hidden="true"></span>标签拾光</h2>
-    <div class="tag-cloud">{tags.map(tag => <a class="chip" href={`/posts/?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}</div>
+    <div class="tag-cloud">{tags.map(tag => <a class="chip" href={withBase(`/posts/?tag=${encodeURIComponent(tag)}`)}>{tag}</a>)}</div>
   </section>
-  <a class="rss-card card" href="/rss.xml"><span class="icon-[lucide--rss]" aria-hidden="true"></span><div><strong>订阅一点日常</strong><p>通过 RSS，让更新与你相遇</p></div><span class="icon-[lucide--arrow-up-right]" aria-hidden="true"></span></a>
+  <a class="rss-card card" href={withBase("/rss.xml")}><span class="icon-[lucide--rss]" aria-hidden="true"></span><div><strong>订阅一点日常</strong><p>通过 RSS，让更新与你相遇</p></div><span class="icon-[lucide--arrow-up-right]" aria-hidden="true"></span></a>
 </aside>
 <style>
 .category-panel > a { display: flex; align-items: center; justify-content: space-between; font-size: 12px; padding: 8px 0; }

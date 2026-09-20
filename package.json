@@ -1,7 +1,7 @@
 {
   "name": "kanade",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -12,11 +12,11 @@
     "deploy:local": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/preview.ps1"
   },
   "dependencies": {
-    "@astrojs/vue": "^5.1.4",
+    "@astrojs/vue": "^7.0.3",
     "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.16.9",
-    "tailwindcss": "^4.1.18",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.3",
+    "tailwindcss": "^4.3.3",
     "vue": "^3.5.26"
   },
   "devDependencies": {
@@ -26,6 +26,12 @@
     "@playwright/test": "^1.63.0",
     "@types/node": "^22.20.4",
     "typescript": "^5.9.3",
+    "vite": "^8.3.0",
     "vue-tsc": "^3.3.11"
-  }
+  },
+  "description": "A pastel Astro blog theme with Vue islands and a colorful sticky-note guestbook.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "packageManager": "pnpm@10.33.0"
 }
