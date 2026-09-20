@@ -38,5 +38,5 @@ small { font: 6px "Oxanium-Medium", sans-serif; letter-spacing: .12em; margin-to
 .git { background: #fae7df; color: #bc7e68; }
 .design { background: #e5e6fa; color: #8283b5; }
 .featured { background: #e9e1f4; }
-:global(.dark) .post-cover { filter: brightness(.75) saturate(.8); }
+.dark .post-cover { filter: brightness(.75) saturate(.8); }
 </style>

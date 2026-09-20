@@ -1,7 +1,11 @@
 ---
-import BlogLayout from "../layouts/BlogLayout.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 import Guestbook from "../components/Guestbook.vue";
 ---
-<BlogLayout title="留言" heroTitle="来都来了，打个招呼吧" heroSubtitle="世界很大，相遇是一件值得记录的小事。">
-  <Guestbook client:load />
-</BlogLayout>
+<BaseLayout title="留言墙" description="选一张彩色便签，写下问候、愿望和今天的小确幸。在 Kanade 留言墙，收藏每个温柔的瞬间。" heroTitle="一面小墙，装下许多温柔" heroSubtitle="让路过的心情，有一个停留的地方。">
+  <div class="shell guestbook-shell"><Guestbook client:load /></div>
+</BaseLayout>
+<style>
+  .guestbook-shell { padding-top: 24px; padding-bottom: 42px; }
+  @media (max-width: 760px) { .guestbook-shell { padding-top: 18px; padding-bottom: 28px; } }
+</style>

@@ -54,6 +54,7 @@ test("深浅主题在刷新和跨页后保留", async ({ page }) => {
   await expect(page.locator(".post-feed")).toHaveAttribute("data-ready", "true");
   await page.getByRole("button", { name: "切换深色模式" }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
+  await expect(page.locator("html")).toHaveCSS("filter", "none");
   await page.reload();
   await expect(page.locator("html")).toHaveClass(/dark/);
   await page.goto("/about/");
@@ -62,22 +63,83 @@ test("深浅主题在刷新和跨页后保留", async ({ page }) => {
   await expect(page.locator("html")).not.toHaveClass(/dark/);
 });
 
-test("本地留言保存、转义、刷新和删除", async ({ page }) => {
+test("彩色便签保存、转义、刷新和删除", async ({ page }) => {
   await page.goto("/messages/");
   await expect(page.locator(".guestbook")).toHaveAttribute("data-ready", "true");
   await page.getByLabel("怎么称呼你").fill("测试访客");
   const text = '<img src=x onerror="alert(1)"> 测试留言';
   await page.getByLabel("想说的话").fill(text);
-  await page.getByRole("button", { name: "保存留言" }).click();
-  await expect(page.locator(".message-main > p")).toHaveText(text);
-  await expect(page.locator(".message-main img")).toHaveCount(0);
+  await page.getByRole("radio", { name: "晴空蓝" }).check();
+  await page.getByRole("button", { name: "贴到留言墙" }).click();
+  await expect(page.locator(".message")).toHaveAttribute("data-color", "sky");
+  await expect(page.locator(".message .message-main > p")).toHaveText(text);
+  await expect(page.locator(".message .message-main img")).toHaveCount(0);
   await expect(page.getByRole("status")).toContainText("已保存在当前浏览器");
   await page.reload();
-  await expect(page.locator(".message-main > p")).toHaveText(text);
+  await expect(page.locator(".message .message-main > p")).toHaveText(text);
+  await expect(page.locator(".message")).toHaveAttribute("data-color", "sky");
   await page.getByRole("button", { name: "删除 测试访客 的留言" }).click();
   await expect(page.locator(".message")).toHaveCount(0);
   await page.reload();
   await expect(page.locator(".message")).toHaveCount(0);
+});
+
+test("旧留言迁移、异常颜色回退与时间排序", async ({ page }) => {
+  await page.goto("/messages/");
+  await page.evaluate(() => localStorage.setItem("kanade:guestbook:v1", JSON.stringify([
+    { id: "older", name: "旧访客", content: "原有留言仍然保留", date: "2026-08-01T10:00:00Z" },
+    { id: "newer", name: "新访客", content: "颜色字段异常也能阅读", date: "2026-09-01T10:00:00Z", color: "invalid-color" },
+    { id: "older", name: "重复记录", content: "不重复展示", date: "2026-08-01T10:00:00Z" },
+    { id: "broken", content: 123 }, null,
+  ])));
+  await page.reload();
+  await expect(page.locator(".message")).toHaveCount(2);
+  await expect(page.locator(".message .note-author strong")).toHaveText(["新访客", "旧访客"]);
+  for (const note of await page.locator(".message").all()) {
+    await expect(note).toHaveAttribute("data-color", /^(butter|rose|mint|sky|lilac)$/);
+  }
+  await page.getByRole("button", { name: "切换为最早优先" }).click();
+  await expect(page.locator(".message .note-author strong")).toHaveText(["旧访客", "新访客"]);
+  await page.getByLabel("怎么称呼你").fill("迁移后访客");
+  await page.getByLabel("想说的话").fill("新旧留言一起保存");
+  await page.getByRole("button", { name: "贴到留言墙" }).click();
+  await expect(page.locator(".message")).toHaveCount(3);
+  await expect(page.locator(".message .note-author strong").first()).toHaveText("迁移后访客");
+  await page.reload();
+  await expect(page.locator(".message")).toHaveCount(3);
+  await expect(page.locator(".message .message-main > p")).toContainText(["新旧留言一起保存", "颜色字段异常也能阅读", "原有留言仍然保留"]);
+});
+
+test("五种便签、长留言及深色墙面布局", async ({ page }) => {
+  await page.goto("/messages/");
+  await expect(page.locator(".guestbook")).toHaveAttribute("data-ready", "true");
+  await page.getByRole("button", { name: "第一张便签，留给你" }).click();
+  await expect(page.getByLabel("想说的话")).toBeFocused();
+  const colors = ["奶油黄", "樱花粉", "薄荷绿", "晴空蓝", "浅芋紫"];
+  for (const color of colors) {
+    await page.getByRole("radio", { name: color }).check();
+    await page.getByLabel("怎么称呼你").fill(color);
+    await page.getByLabel("想说的话").fill(color === "浅芋紫" ? "长留言".repeat(166) + "完结" : `${color}的心情\n今天也要开心`);
+    await page.getByRole("button", { name: "贴到留言墙" }).click();
+    await expect(page.locator(".message .note-author strong").first()).toHaveText(color);
+  }
+  await expect(page.locator(".message")).toHaveCount(5);
+  await expect(page.locator(".note-count")).toHaveText("5 张便签");
+  expect(await page.locator(".message .message-main > p").first().evaluate(element => element.textContent?.length)).toBe(500);
+  const lightColors = await page.locator(".message").evaluateAll(notes => notes.map(note => getComputedStyle(note).backgroundColor));
+  expect(new Set(lightColors).size).toBe(5);
+  await page.getByRole("button", { name: "切换深色模式" }).click();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  const darkColors = await page.locator(".message").evaluateAll(notes => notes.map(note => getComputedStyle(note).backgroundColor));
+  expect(new Set(darkColors).size).toBe(5);
+  expect(darkColors).not.toEqual(lightColors);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  for (const paragraph of await page.locator(".message .message-main > p").all()) {
+    expect(await paragraph.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+  }
+  await page.reload();
+  await expect(page.locator(".message")).toHaveCount(5);
+  expect(new Set(await page.locator(".message").evaluateAll(notes => notes.map(note => note.getAttribute("data-color")))).size).toBe(5);
 });
 
 test("损坏存储与空白留言可恢复", async ({ page }) => {
@@ -86,12 +148,12 @@ test("损坏存储与空白留言可恢复", async ({ page }) => {
   await expect(page.getByRole("alert")).toBeVisible();
   await page.getByLabel("怎么称呼你").fill("   ");
   await page.getByLabel("想说的话").fill("   ");
-  await page.getByRole("button", { name: "保存留言" }).click();
+  await page.getByRole("button", { name: "贴到留言墙" }).click();
   await expect(page.getByRole("alert")).toContainText("请填写昵称和想说的话");
   await page.getByLabel("怎么称呼你").fill("访客");
   await page.getByLabel("想说的话").fill("现在恢复正常");
-  await page.getByRole("button", { name: "保存留言" }).click();
-  await expect(page.locator(".message-main > p")).toHaveText("现在恢复正常");
+  await page.getByRole("button", { name: "贴到留言墙" }).click();
+  await expect(page.locator(".message .message-main > p")).toHaveText("现在恢复正常");
 });
 
 test("禁止存储时主题可切换、留言报告未保存", async ({ page }) => {
@@ -107,7 +169,7 @@ test("禁止存储时主题可切换、留言报告未保存", async ({ page }) 
   await expect(page.locator("html")).toHaveClass(/dark/);
   await page.getByLabel("怎么称呼你").fill("访客");
   await page.getByLabel("想说的话").fill("这条应报告保存失败");
-  await page.getByRole("button", { name: "保存留言" }).click();
+  await page.getByRole("button", { name: "贴到留言墙" }).click();
   await expect(page.getByRole("alert")).toContainText("留言未保存");
   await expect(page.locator(".message")).toHaveCount(0);
   expect(errors).toEqual([]);
