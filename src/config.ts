@@ -1,45 +1,38 @@
-// ---- 网站基本信息 ---- //
 export const siteInfo = {
-  // 网站标题
   title: "Kanade",
-  // 网站描述
-  description: "Kanade A Blog built with Astro.",
-  // 网站关键字
-  keywords: ["astro", "kanade", "blog", "Sudoria"],
-}
+  description: "苏多莉亚的小小记录站。分享前端开发、折腾日常，以及生活里闪闪发光的片刻。",
+  keywords: ["Astro", "Kanade", "博客", "Sudoria", "前端开发"],
+  // 发布到域名时设置 SITE_URL，例如 https://your-blog.example。
+  url: import.meta.env.SITE_URL || "http://localhost:4321",
+};
 
-// ---- 导航栏配置 ---- //
 export const headerConfig = {
-    title: "Kanade",
-    logo: "/src/assets/logo.png",
-    navLinks: [
-        { name: "首页", icon:"icon-[bx--bxs-home-circle]",url: "/" },
-        { name: "文章", icon:"icon-[material-symbols--article]", url: "/posts" },
-        { name: "留言", icon:"icon-[basil--comment-solid]", url: "/messages" },
-        { name: "友链", icon:"icon-[mingcute--link-3-line]", url: "/friends" },
-        { name: "关于", icon:"icon-[mynaui--indifferent-ghost-solid]", url: "/about" },
-    ],
-    search: true,  // 是否启用搜索功能
-    lightAndDarkMode: true,  // 是否启用浅色和深色模式切换
-    githubLink: "",  // GitHub 链接(留空则不显示)
-}
+  title: "Kanade",
+  navLinks: [
+    { name: "首页", icon: "icon-[bx--bxs-home-circle]", url: "/" },
+    { name: "文章", icon: "icon-[material-symbols--article]", url: "/posts/" },
+    { name: "留言", icon: "icon-[basil--comment-solid]", url: "/messages/" },
+    { name: "友链", icon: "icon-[mingcute--link-3-line]", url: "/friends/" },
+    { name: "关于", icon: "icon-[mynaui--indifferent-ghost-solid]", url: "/about/" },
+  ],
+};
 
-// ---- 欢迎板块配置 ---- //
 export const welcomeConfig = {
-    title: "欢迎来到 Kanade",
-    subTitle: "这是一个由 Astro 构建的博客网站。",
-    bgImage: "https://img2.huashi6.com/images/resource/thumbnail/2025/02/09/23269_76985257670.jpg?imageMogr2/quality/75/interlace/1/thumbnail/x942/gravity/Center/crop/1400x942/format/webp%7Cwatermark/2/text/6Kem56uZQFpVVQ/gravity/South/fill/I2ZmZmZmZg/fontsize/400/font/5b6u6L2v6ZuF6buR/dy/20",
-}
+  title: "欢迎来到 Kanade",
+  subTitle: "把热爱写进代码，把日常收藏成诗。",
+  bgImage: "/images/hero.webp",
+};
 
-// ---- 个人信息配置 ---- //
 export const personalInfo = {
-    name: "Sudoria",
-    avatar: "/src/assets/avatar.png",
-    bio: "热爱编程与技术分享的开发者。",
-    socialLinks: [
-        { icon: "icon-[jam--github]", url: "https://github.com/sudoriaa"  },
-        { icon: "icon-[jam--github]", url: "https://github.com/sudoria"  },
-        { icon: "icon-[jam--github]", url: "https://github.com/sudori"  },
-        { icon: "icon-[jam--github]", url: "https://github.com/sudor"  },
-]
-}
+  name: "苏多莉亚",
+  englishName: "Sudoria",
+  avatar: "/images/sudoria.jpg",
+  role: "全栈工程师",
+  bio: "在代码与生活之间，寻找一点小小的浪漫。",
+  github: "https://github.com/sudoriaa",
+  socialLinks: [
+    { name: "GitHub", icon: "icon-[jam--github]", url: "https://github.com/sudoriaa" },
+    { name: "RSS 订阅", icon: "icon-[lucide--rss]", url: "/rss.xml" },
+    { name: "留言板", icon: "icon-[lucide--mail]", url: "/messages/" },
+  ],
+};

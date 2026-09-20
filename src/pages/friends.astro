@@ -1,0 +1,34 @@
+---
+import BlogLayout from "../layouts/BlogLayout.astro";
+import { friends } from "../data/friends";
+---
+<BlogLayout title="友链" heroTitle="让小小的岛屿，彼此相连" heroSubtitle="收藏喜欢的站点，也收藏每一次真诚的相遇。">
+  <section class="card page-card">
+    <div class="page-heading"><span class="eyebrow">SOME LOVELY PLACES</span><h2>隔壁的风景</h2><p>先从陪伴小站成长的开源项目开始，一起探索更大的世界。</p></div>
+    <div class="friend-grid">{friends.map(friend => <a class:list={["friend-card", friend.color]} href={friend.url} target="_blank" rel="noopener noreferrer"><span class:list={["friend-icon", friend.icon]} aria-hidden="true"></span><span class="friend-arrow icon-[lucide--arrow-up-right]" aria-hidden="true"></span><h3>{friend.name}</h3><p>{friend.description}</p><span class="friend-label">{friend.label}</span></a>)}</div>
+    <div class="section-rule"></div>
+    <h3 class="panel-title"><span class="icon-[lucide--link]" aria-hidden="true"></span>关于交换友链</h3>
+    <p class="friend-copy">欢迎同样喜欢记录、持续更新的个人博客。如果想认识我，可以在 GitHub 上找到我，分享你的小站和一段简短的介绍。</p>
+    <div class="site-intro"><span>站点名称</span><strong>Kanade</strong><span>站点描述</span><strong>记录热爱与日常的个人博客</strong><span>站点头像</span><a href="/images/sudoria.jpg">查看头像 ↗</a></div>
+    <a class="btn secondary" href="https://github.com/sudoriaa" target="_blank" rel="noopener noreferrer"><span class="icon-[jam--github]" aria-hidden="true"></span>在 GitHub 找到我</a>
+  </section>
+</BlogLayout>
+<style>
+.friend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.friend-card { position: relative; padding: 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+.friend-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: var(--shadow); }
+.friend-icon { display: block; font-size: 33px; color: #9c82b5; margin-bottom: 17px; }
+.friend-arrow { position: absolute; top: 22px; right: 19px; color: var(--muted); }
+.friend-card.green .friend-icon { color: #66a28c; }
+.friend-card.blue .friend-icon { color: #64a9c0; }
+.friend-card.pink .friend-icon { color: var(--accent); }
+.friend-card h3 { font-family: "Oxanium-Medium"; font-size: 18px; margin: 8px 0; }
+.friend-card p { color: var(--muted); font-size: 11px; line-height: 1.9; margin: 7px 0 16px; }
+.friend-label { display: inline-block; color: var(--accent); background: var(--accent-soft); border-radius: 5px; padding: 2px 7px; font-size: 9px; }
+.friend-copy { color: var(--muted); font-size: 13px; line-height: 2; }
+.site-intro { display: grid; grid-template-columns: 75px 1fr; gap: 12px; padding: 20px; background: var(--bg); border-radius: 12px; font-size: 12px; margin: 20px 0; }
+.site-intro > span { color: var(--muted); }
+.site-intro strong { font-weight: 400; }
+.site-intro a { color: var(--accent); }
+@media(max-width:400px) { .friend-grid { grid-template-columns: 1fr; } }
+</style>

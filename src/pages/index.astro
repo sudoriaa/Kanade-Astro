@@ -1,21 +1,17 @@
 ---
-import PersonalCard from "../components/home/PersonalCard.vue";
-import BaseLayout from "../layouts/BaseLayout.astro";
+import BlogLayout from "../layouts/BlogLayout.astro";
+import PostFeed from "../components/posts/PostFeed.vue";
+import { getPosts, summarize } from "../lib/posts";
+const posts = (await getPosts()).map(summarize);
 ---
-
-<BaseLayout>
-  <div class="flex mt-10 justify-center w-full">
-    <div class="flex w-360 m-auto gap-4 p-4">
-      <div class="flex flex-col w-1/5">
-        <PersonalCard />
-      </div>
-      <div class="flex flex-col flex-1">
-        <PersonalCard />
-      </div>
-
-      <div class="flex flex-col w-1/4">
-        <PersonalCard />
-      </div>
-    </div>
-  </div>
-</BaseLayout>
+<BlogLayout home>
+  <div class="hello-strip"><span class="icon-[lucide--sparkles]" aria-hidden="true"></span><p>你好呀，远道而来的朋友，今天也要开心哦！</p><span class="hello-pill">HAVE A NICE DAY</span></div>
+  <PostFeed posts={posts} client:load />
+</BlogLayout>
+<style>
+.hello-strip { display: flex; align-items: center; gap: 9px; color: var(--accent); font-size: 11px; margin: 0 0 21px; padding: 11px 15px; border: 1px dashed #ebbbc980; border-radius: 11px; background: #ffffff25; }
+.hello-strip > span:first-child { font-size: 17px; flex-shrink: 0; }
+.hello-strip p { margin: 0; flex: 1; }
+.hello-pill { font: 7px "Oxanium-Medium", sans-serif; letter-spacing: .05em; opacity: .65; }
+@media(max-width:760px) { .hello-strip { font-size: 10px; margin-bottom: 22px; } .hello-pill { display: none; } }
+</style>

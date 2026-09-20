@@ -1,29 +1,46 @@
 ---
-import { welcomeConfig } from '../../config'
-import Waves from './Waves.vue';
+import { welcomeConfig } from "../../config";
+import Waves from "./Waves.vue";
+interface Props { compact?: boolean; title?: string; subtitle?: string }
+const { compact = false, title, subtitle } = Astro.props;
 ---
-
-<div
-  class="welcome-section relative text-center h-[60dvh] flex flex-col justify-center items-center
-         bg-cover bg-center
-         before:absolute before:inset-0 before:bg-black/30 before:z-0"
-  style={`background-image: url('${welcomeConfig.bgImage}');`}
->
-  <div class="relative z-10 flex flex-col">
-    <h1>{welcomeConfig.title}</h1>
-    <p>{welcomeConfig.subTitle}</p>
+<section class:list={["welcome-section", { compact }]} style={`background-image: url('${welcomeConfig.bgImage}')`} aria-label="欢迎来到 Kanade">
+  <div class="hero-shade"></div>
+  <div class="hero-content">
+    <span class="hero-eyebrow">{compact ? "A LITTLE CORNER OF MY WORLD" : "CODE · LIFE · LITTLE THINGS"}</span>
+    <h1>{title || welcomeConfig.title}<span class="hero-sparkle" aria-hidden="true">✧</span></h1>
+    <p>{subtitle || welcomeConfig.subTitle}</p>
+    {!compact && <a href="#main-content" class="hero-explore">慢慢来，生活会有答案 <span class="icon-[lucide--arrow-down]" aria-hidden="true"></span></a>}
   </div>
-
-  <Waves class="absolute bottom-0 left-0 w-full"/>
-</div>
-
+  <span class="hero-side-note" aria-hidden="true">EVERY DAY IS A NEW PAGE</span>
+  <Waves class="hero-waves" />
+</section>
 <style>
-.welcome-section::before {
-  transition: background-color 0.3s ease-in-out;
-}
-
-.welcome-section h1,
-.welcome-section p {
-  transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+.welcome-section { position: relative; height: 450px; background-size: cover; background-position: center 43%; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; }
+.hero-shade { position: absolute; inset: 0; background: linear-gradient(100deg, #29375c40, #14213b2e 50%, #20223960); }
+.hero-content { position: relative; z-index: 2; padding: 25px 20px 55px; text-shadow: 0 2px 18px #1f2c6150; }
+.hero-eyebrow { display: block; font-family: "Oxanium-Medium", sans-serif; font-size: 11px; letter-spacing: .28em; opacity: .92; margin-bottom: 19px; }
+.hero-content h1 { margin: 0 0 10px; font-size: clamp(30px, 3.5vw, 46px); letter-spacing: .06em; font-weight: 600; line-height: 1.5; }
+.hero-sparkle { display: inline-block; font-size: 33px; margin-left: 12px; vertical-align: top; color: #ffd1df; }
+.hero-content p { font-size: 15px; letter-spacing: .16em; margin: 8px 0 23px; }
+.hero-explore { display: inline-flex; align-items: center; gap: 14px; border: 1px solid #ffffff65; background: #ffffff12; padding: 8px 18px; border-radius: 30px; font-size: 11px; letter-spacing: .05em; backdrop-filter: blur(5px); }
+.hero-explore:hover { background: #ffffff30; transform: translateY(2px); }
+.hero-side-note { position: absolute; right: 26px; top: 42%; writing-mode: vertical-rl; font-family: "Oxanium-Medium", sans-serif; font-size: 9px; letter-spacing: .22em; opacity: .65; }
+.hero-waves { position: absolute; bottom: -2px; left: 0; width: 100%; z-index: 1; }
+.hero-waves svg { height: 70px; min-height: 70px; }
+.welcome-section.compact { height: 290px; }
+.compact .hero-content { padding-top: 72px; }
+.compact .hero-content h1 { font-size: 34px; }
+.compact .hero-eyebrow { font-size: 10px; margin-bottom: 10px; }
+.compact .hero-content p { font-size: 13px; }
+@media(max-width:760px) {
+  .welcome-section { height: 380px; background-position: 40% center; }
+  .hero-content { padding-top: 50px; }
+  .hero-content p { font-size: 12px; letter-spacing: .06em; }
+  .hero-content h1 { font-size: 30px; }
+  .hero-sparkle { font-size: 24px; margin-left: 5px; }
+  .hero-side-note { display: none; }
+  .welcome-section.compact { height: 260px; }
+  .compact .hero-content h1 { font-size: 28px; }
 }
 </style>

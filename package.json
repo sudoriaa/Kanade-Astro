@@ -6,7 +6,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check && vue-tsc --noEmit",
+    "test": "playwright test",
+    "deploy:local": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/preview.ps1"
   },
   "dependencies": {
     "@astrojs/vue": "^5.1.4",
@@ -17,7 +20,12 @@
     "vue": "^3.5.26"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@iconify/json": "^2.2.428",
-    "@iconify/tailwind4": "^1.2.1"
+    "@iconify/tailwind4": "^1.2.1",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.4",
+    "typescript": "^5.9.3",
+    "vue-tsc": "^3.3.11"
   }
 }

@@ -1,0 +1,130 @@
+---
+import { render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PersonalCard from "../../components/home/PersonalCard.vue";
+import PostCover from "../../components/posts/PostCover.vue";
+import { getPosts, summarize } from "../../lib/posts";
+export async function getStaticPaths() {
+  return (await getPosts()).map(post => ({ params: { id: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const posts = (await getPosts()).map(summarize);
+const summary = summarize(post);
+const index = posts.findIndex(item => item.id === post.id);
+const newer = posts[index - 1];
+const older = posts[index + 1];
+---
+<BaseLayout title={post.data.title} description={post.data.description} heroTitle="读一段文字，留一点时光" heroSubtitle="认真记录的每个瞬间，都有自己的光。" article>
+  <div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
+  <div class="shell article-layout">
+    <article class="card article-detail">
+      <a href="/posts/" class="text-link"><span class="icon-[lucide--arrow-left]" aria-hidden="true"></span>返回所有文章</a>
+      <header class="article-header">
+        <a class="chip" href={`/posts/?category=${encodeURIComponent(post.data.category)}`}>{post.data.category}</a>
+        <h1>{post.data.title}</h1>
+        <div class="article-meta"><img src="/images/sudoria.jpg" alt="" width="25" height="25" /><span>苏多莉亚</span><span>·</span><time datetime={summary.date}>{summary.date}</time><span>·</span><span>约 {summary.minutes} 分钟</span></div>
+        <p>{post.data.description}</p>
+      </header>
+      <div class="article-cover"><PostCover kind={post.data.cover} featured={post.data.featured} /></div>
+      <details class="mobile-toc"><summary>文章目录</summary><ol>{headings.filter(h => h.depth <= 3).map(h => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol></details>
+      <div class="prose" id="article-body"><Content /></div>
+      <div class="article-ending"><span>✿</span><p>感谢读到这里，愿这些文字对你有所帮助。</p></div>
+      <div class="article-tools"><div class="article-tags">{post.data.tags.map(tag => <a class="chip" href={`/posts/?tag=${encodeURIComponent(tag)}`}># {tag}</a>)}</div><button id="share-post" class="btn secondary"><span class="icon-[lucide--link]" aria-hidden="true"></span>复制文章链接</button></div>
+      <p id="share-status" role="status" class="share-status"></p>
+      <div class="author-note"><img src="/images/sudoria.jpg" alt="苏多莉亚" width="44" height="44" /><div><strong>苏多莉亚 <span class="accent">/ Sudoria</span></strong><p>写一点代码，记录一点生活。欢迎来<a href="/messages/">留言板</a>聊聊。</p></div></div>
+      <nav class="adjacent-posts" aria-label="相邻文章">
+        {newer ? <a href={`/posts/${newer.id}/`}><span>← 上一篇</span><strong>{newer.title}</strong></a> : <div></div>}
+        {older && <a href={`/posts/${older.id}/`}><span>下一篇 →</span><strong>{older.title}</strong></a>}
+      </nav>
+    </article>
+    <aside class="article-sidebar">
+      <PersonalCard posts={posts} />
+      <nav class="card panel toc" aria-label="文章目录"><h2 class="panel-title"><span class="icon-[lucide--list]" aria-hidden="true"></span>文章目录</h2><ol>{headings.filter(h => h.depth <= 3).map((h, i) => <li class:list={{ nested: h.depth === 3 }}><a href={`#${h.slug}`} data-heading={h.slug}><span>{String(i + 1).padStart(2, "0")}</span>{h.text}</a></li>)}</ol></nav>
+    </aside>
+  </div>
+  <script>
+    const body = document.querySelector<HTMLElement>("#article-body");
+    const progress = document.querySelector<HTMLElement>("#reading-progress");
+    const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>("[data-heading]")];
+    const update = () => {
+      if (!body || !progress) return;
+      const top = body.getBoundingClientRect().top + window.scrollY;
+      const distance = Math.max(1, body.offsetHeight - window.innerHeight + 130);
+      progress.style.width = `${Math.min(100, Math.max(0, (window.scrollY - top + 100) / distance * 100))}%`;
+      let current = "";
+      for (const link of tocLinks) {
+        const heading = document.getElementById(link.dataset.heading || "");
+        if (heading && heading.getBoundingClientRect().top <= 150) current = link.dataset.heading || "";
+      }
+      tocLinks.forEach(link => {
+        const selected = link.dataset.heading === current;
+        link.classList.toggle("active", selected);
+        selected ? link.setAttribute("aria-current", "location") : link.removeAttribute("aria-current");
+      });
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+    document.querySelector("#share-post")?.addEventListener("click", async () => {
+      const status = document.querySelector<HTMLElement>("#share-status");
+      try {
+        await navigator.clipboard.writeText(window.location.href.split("#")[0]);
+        if (status) status.textContent = "链接已复制，分享给同样热爱记录的朋友吧。";
+      } catch { if (status) status.textContent = `请复制地址栏中的链接：${window.location.href.split("#")[0]}`; }
+    });
+    document.querySelectorAll<HTMLPreElement>(".prose pre").forEach(pre => {
+      const code = pre.querySelector("code");
+      if (!code) return;
+      const button = document.createElement("button");
+      button.className = "copy-code"; button.textContent = "复制";
+      button.setAttribute("aria-label", "复制代码"); button.setAttribute("aria-live", "polite");
+      button.addEventListener("click", async () => {
+        try { await navigator.clipboard.writeText(code.textContent || ""); button.textContent = "已复制"; }
+        catch { button.textContent = "请选中代码复制"; }
+        setTimeout(() => { button.textContent = "复制"; }, 2500);
+      });
+      pre.append(button);
+    });
+  </script>
+</BaseLayout>
+<style>
+.article-layout { max-width: 1130px; display: grid; grid-template-columns: minmax(0,1fr) 235px; gap: 25px; align-items: start; padding-top: 20px; padding-bottom: 45px; }
+.article-detail { padding: 35px; min-width: 0; }
+.article-header { padding-top: 22px; }
+.article-header h1 { font-size: 29px; line-height: 1.65; margin: 15px 0; font-weight: 600; }
+.article-meta { display:flex; flex-wrap: wrap; align-items: center; gap: 10px; color: var(--muted); font-size: 11px; }
+.article-meta img { border-radius: 50%; }
+.article-header > p { color: var(--muted); font-size: 13px; line-height: 1.9; margin: 20px 0; }
+.article-cover { border-radius: 12px; overflow: hidden; height: 230px; }
+.article-cover :global(.cover-icon) { font-size: 58px; }
+.article-cover :global(strong) { font-size: 35px; }
+.article-sidebar { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 90px; }
+.toc ol { list-style: none; padding: 0; margin: 0; }
+.toc li { margin: 11px 0; line-height: 1.8; }
+.toc a { display: flex; gap: 9px; font-size: 11px; color: var(--muted); }
+.toc a span { color: var(--accent); font: 10px/2 "Oxanium-Medium"; }
+.toc a.active, .toc a:hover { color: var(--accent); }
+.toc .nested { margin-left: 12px; }
+.reading-progress { position: fixed; top: 70px; left: 0; height: 3px; width: 0; background: var(--accent); z-index: 41; }
+.article-ending { margin: 40px 0 28px; text-align: center; color: var(--muted); font-size: 11px; }
+.article-ending > span { color: var(--accent); font-size: 26px; }
+.article-tools { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding: 20px 0; border-top: 1px solid var(--line); }
+.article-tools .btn { font-size: 11px; padding: 8px 12px; }
+.article-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.share-status { color: var(--accent); font-size: 11px; }
+.author-note { display: flex; align-items: center; gap: 15px; padding: 18px; border-radius: 12px; background: var(--accent-soft); }
+.author-note img { border-radius: 13px; }
+.author-note strong { font-size: 13px; font-weight: 400; }
+.author-note p { font-size: 11px; color: var(--muted); margin: 4px 0 0; }
+.author-note a { color: var(--accent); }
+.adjacent-posts { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 27px; }
+.adjacent-posts a { display: flex; flex-direction: column; gap: 8px; }
+.adjacent-posts a:last-child { text-align: right; }
+.adjacent-posts span { color: var(--muted); font-size: 11px; }
+.adjacent-posts strong { font-size: 12px; font-weight: 400; }
+.adjacent-posts a:hover { color: var(--accent); }
+.mobile-toc { display: none; }
+@media(max-width:900px) { .article-layout { grid-template-columns: 1fr; max-width: 800px; } .article-sidebar { display: none; } .mobile-toc { display: block; background: var(--accent-soft); padding: 15px 20px; border-radius: 12px; margin: 25px 0; color: var(--accent); font-size: 13px; } .mobile-toc summary { cursor: pointer; } .mobile-toc ol { padding-left: 18px; margin: 12px 0 0; } .mobile-toc li { margin: 8px 0; } }
+@media(max-width:760px) { .article-detail { padding: 24px 20px; } .article-header h1 { font-size: 24px; } .article-cover { height: 190px; } .reading-progress { top: 62px; } }
+</style>

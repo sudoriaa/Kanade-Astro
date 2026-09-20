@@ -1,158 +1,71 @@
 <script setup lang="ts">
-import { headerConfig } from '../../config';
-import { ref, onMounted, onUnmounted } from 'vue'
-import { initTheme, toggleTheme as toggle } from '../../scripts/theme';
-
-// 是否为深色模式 - 直接读取 DOM 状态
+import { ref, onMounted, onUnmounted } from "vue";
+import { headerConfig } from "../../config";
+import { initTheme, toggleTheme } from "../../scripts/theme";
+const props = defineProps<{ pathname: string }>();
 const isDark = ref(false);
-
-// 更新主题状态
-const updateThemeState = () => {
-    isDark.value = document.documentElement.classList.contains('dark');
-}
-
-// 切换主题
-const handleToggleTheme = () => {
-    toggle();
-    updateThemeState();
-}
-
-// 监听滚动以改变导航栏样式
-const isAtTop = ref(true)
-
-const handleScroll = () => {
-    isAtTop.value = window.scrollY <= 16 * 4;
-}
-
-// MutationObserver 监听 dark 类变化
-let observer: MutationObserver | null = null;
-
+const isAtTop = ref(true);
+const menuOpen = ref(false);
+const active = (url: string) => url === "/" ? props.pathname === "/" : props.pathname.startsWith(url);
+const handleScroll = () => { isAtTop.value = window.scrollY < 48; };
+const toggle = () => { isDark.value = toggleTheme() === "dark"; };
+const openSearch = () => { menuOpen.value = false; window.dispatchEvent(new Event("kanade:search")); };
+const handleKey = (event: KeyboardEvent) => { if (event.key === "Escape") menuOpen.value = false; };
 onMounted(() => {
-    // 初始化主题
-    initTheme();
-    updateThemeState();
-    
-    // 监听 html 元素的 class 变化
-    observer = new MutationObserver(() => {
-        updateThemeState();
-    });
-    observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['class']
-    });
-    
-    window.addEventListener('scroll', handleScroll)
-    handleScroll()
-})
-
+  isDark.value = initTheme() === "dark";
+  handleScroll();
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  window.addEventListener("keydown", handleKey);
+});
 onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll)
-    observer?.disconnect();
-})
-
+  window.removeEventListener("scroll", handleScroll);
+  window.removeEventListener("keydown", handleKey);
+});
 </script>
 
 <template>
-    <!-- 主头部 -->
-    <header class="nav-header fixed flex items-center w-screen top-0 z-50 h-16 shadow-lg px-4 text-shadow-md text-kanadeLight" 
-         :class="[
-            isAtTop ? 'bg-transparent shadow-none text-kanadeLight' : 'bg-kanadeLight/50 dark:bg-kanadeDark/50',
-            isAtTop ? '' : 'backdrop-blur'
-        ]">
-        <div class="flex items-center w-7xl m-auto justify-between">
-            <!-- Logo 区域 -->
-            <div class="flex items-center space-x-3">
-                <a href="/" class="flex items-center space-x-2 group">
-                    <div>
-                        <h1
-                            class="text-2xl font-bold tracking-tight group-hover:text-amber-200 transition-all duration-500">
-                            {{ headerConfig.title }}
-                        </h1>
-                    </div>
-                </a>
-            </div>
-
-            <!-- 桌面端导航链接 -->
-            <nav class="flex-1 flex justify-center">
-                <ul class="flex items-center space-x-1">
-                    <li v-for="item in headerConfig.navLinks" :key="item.name" class="relative text-xl">
-                        <a :href="item.url" class="inline-flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-500
-         group/nav-item relative">
-                            <!-- 图标 -->
-                            <span v-if="item.icon" :class="item.icon" class="inline-flex items-center justify-center"
-                                style="font-size: 1.1em; width: 1.1em; height: 1.1em; line-height: 1;"></span>
-
-                            <!-- 文字 -->
-                            <span class="font-medium whitespace-nowrap leading-none text-base">
-                                {{ item.name }}
-                            </span>
-
-                            <!-- 底部指示线 -->
-                            <span class="absolute bottom-1 left-1/4 right-1/4 h-0.5 bg-kanadeLight rounded-full
-           scale-x-0 group-hover/nav-item:scale-x-100 group-hover/nav-item:left-2 group-hover/nav-item:right-2
-           origin-center transition-all duration-300"></span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-            <!-- 右侧功能区 -->
-            <div class="flex items-center space-x-4">
-                <!-- 主题切换按钮 -->
-                <button
-                    class="flex items-center justify-center cursor-pointer p-2 rounded hover:bg-kanadeLight/10 transition-colors duration-200 relative w-10 h-10"
-                    aria-label="切换主题" @click="handleToggleTheme">
-                    <!-- 太阳图标 (浅色模式时显示，点击切换到深色) -->
-                    <span
-                        class="icon-[line-md--sun-rising-loop] text-2xl absolute transition-all duration-300 ease-in-out"
-                        :class="[
-                            !isDark
-                                ? 'opacity-100 scale-100'
-                                : 'opacity-0 scale-0'
-                        ]"></span>
-                    <!-- 月亮图标 (深色模式时显示，点击切换到浅色) -->
-                    <span
-                        class="icon-[line-md--moon-filled-alt-loop] text-2xl absolute transition-all duration-300 ease-in-out"
-                        :class="[
-                            isDark
-                                ? 'opacity-100 scale-100'
-                                : 'opacity-0 scale-0'
-                        ]"></span>
-                </button>
-            </div>
-        </div>
-    </header>
+  <header class="nav-header" :class="{ scrolled: !isAtTop, 'menu-open': menuOpen }">
+    <div class="nav-inner shell">
+      <a href="/" class="brand" aria-label="Kanade 首页"><span class="brand-flower">✿</span>{{ headerConfig.title }}<span class="brand-dot">.</span></a>
+      <nav aria-label="主导航" :class="{ expanded: menuOpen }" id="main-navigation">
+        <a v-for="item in headerConfig.navLinks" :key="item.url" :href="item.url" :aria-current="active(item.url) ? 'page' : undefined" :class="{ active: active(item.url) }">
+          <span :class="item.icon" aria-hidden="true"></span><span>{{ item.name }}</span>
+        </a>
+      </nav>
+      <div class="nav-actions">
+        <button @click="openSearch" aria-label="搜索文章" title="搜索文章（Ctrl / ⌘ K）"><span class="icon-[lucide--search]"></span></button>
+        <button @click="toggle" :aria-label="isDark ? '切换浅色模式' : '切换深色模式'" title="切换主题"><span :class="isDark ? 'icon-[lucide--moon]' : 'icon-[lucide--sun]'"></span></button>
+        <button class="menu-toggle" @click="menuOpen = !menuOpen" :aria-expanded="menuOpen" aria-controls="main-navigation" :aria-label="menuOpen ? '关闭菜单' : '打开菜单'"><span :class="menuOpen ? 'icon-[lucide--x]' : 'icon-[lucide--menu]'"></span></button>
+      </div>
+    </div>
+  </header>
 </template>
 
 <style scoped>
-/* 导航栏背景和颜色过渡 */
-.nav-header {
-  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-/* Logo 悬停效果 */
-h1 {
-  transition: color 0.5s ease-in-out;
-}
-
-/* 导航链接悬停效果 */
-nav a {
-  transition: all 0.5s ease-in-out;
-}
-
-/* 底部指示线动画 */
-nav a span:last-child {
-  transition: all 0.3s ease-in-out;
-}
-
-/* 主题切换按钮 */
-button {
-  transition: background-color 0.2s ease-in-out;
-}
-
-/* 主题切换图标动画 */
-.icon-\[line-md--sun-rising-loop\],
-.icon-\[line-md--moon-filled-alt-loop\] {
-  transition: opacity 0.3s ease-in-out, scale 0.3s ease-in-out !important;
+.nav-header { position: fixed; inset: 0 0 auto; height: 70px; z-index: 40; color: #fff; transition: background .25s, color .25s, box-shadow .25s; }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 100%; width: 100%; }
+.brand { display: flex; align-items: center; gap: 8px; font: 600 27px "Oxanium-Medium", sans-serif; letter-spacing: -.8px; }
+.brand-flower { font-size: 29px; font-family: sans-serif; font-weight: 400; }
+.brand-dot { color: #ffb4ca; margin-left: -7px; }
+nav { display: flex; gap: 15px; padding-left: 0; }
+nav a { display: flex; align-items: center; position: relative; gap: 7px; padding: 22px 13px; font-size: 15px; opacity: .85; }
+nav a:hover, nav a.active { opacity: 1; }
+nav a.active::after { content: ""; position: absolute; bottom: 13px; height: 3px; width: 19px; border-radius: 2px; background: currentColor; left: calc(50% - 9px); }
+.nav-actions { display: flex; gap: 10px; }
+.nav-actions button { width: 35px; height: 35px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: inherit; font-size: 19px; }
+.nav-actions button:hover { background: #ffffff25; transform: rotate(-8deg); }
+.nav-header.scrolled, .nav-header.menu-open { background: color-mix(in srgb, var(--card) 92%, transparent); color: var(--text); backdrop-filter: blur(18px); box-shadow: 0 3px 18px #4b314511; }
+.scrolled nav a.active, .scrolled .brand-flower { color: var(--accent); }
+.nav-actions .menu-toggle { display: none; }
+@media (max-width: 760px) {
+  .nav-header { height: 62px; }
+  .brand { font-size: 25px; }
+  .nav-actions { gap: 5px; }
+  .nav-actions .menu-toggle { display: grid; }
+  nav { display: none; }
+  nav.expanded { display: flex; flex-direction: column; gap: 0; position: absolute; inset: 62px 12px auto; padding: 9px; border-radius: 0 0 16px 16px; border: 1px solid var(--line); background: var(--card); color: var(--text); box-shadow: var(--shadow); }
+  nav a { padding: 12px 18px; border-radius: 8px; }
+  nav a.active { background: var(--accent-soft); color: var(--accent); }
+  nav a.active::after { display: none; }
 }
 </style>

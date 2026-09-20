@@ -1,0 +1,15 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import LeftSidebar from "../components/home/LeftSidebar.astro";
+import RightSidebar from "../components/home/RightSidebar.astro";
+import { getPosts, summarize } from "../lib/posts";
+interface Props { title?: string; description?: string; heroTitle?: string; heroSubtitle?: string; home?: boolean }
+const posts = (await getPosts()).map(summarize);
+---
+<BaseLayout {...Astro.props}>
+  <div class="shell blog-grid">
+    <LeftSidebar posts={posts} />
+    <div class="page-content"><slot /></div>
+    <RightSidebar posts={posts} />
+  </div>
+</BaseLayout>

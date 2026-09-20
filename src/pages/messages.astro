@@ -1,0 +1,7 @@
+---
+import BlogLayout from "../layouts/BlogLayout.astro";
+import Guestbook from "../components/Guestbook.vue";
+---
+<BlogLayout title="留言" heroTitle="来都来了，打个招呼吧" heroSubtitle="世界很大，相遇是一件值得记录的小事。">
+  <Guestbook client:load />
+</BlogLayout>

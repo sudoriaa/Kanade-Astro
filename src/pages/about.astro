@@ -1,21 +1,42 @@
 ---
-// 引入网站配置信息、依赖
-import { siteInfo } from "../config";
-// 引入全局样式表
-import '/src/styles/global.css';
+import BlogLayout from "../layouts/BlogLayout.astro";
+import { personalInfo } from "../config";
 ---
-
-<html lang="zh-CN">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={siteInfo.description}>
-		<meta name="keywords" content={siteInfo.keywords.join(", ")}>
-		<title>{siteInfo.title}</title>
-	</head>
-	<body>
-		<h1 class="text-4xl font-bold text-blue-500">{siteInfo.title}</h1>
-	</body>
-</html>
+<BlogLayout title="关于" heroTitle="你好，我是苏多莉亚" heroSubtitle="一个喜欢代码，也喜欢认真生活的普通人。">
+  <section class="card page-card about-card">
+    <div class="about-intro"><img src={personalInfo.avatar} width="90" height="90" alt="苏多莉亚" /><div><span class="eyebrow">HELLO, I'M SUDORIA</span><h2>很高兴，和你相遇 <span class="accent">✿</span></h2><p>全栈工程师 / 终身学习者 / 日常记录员</p></div></div>
+    <div class="prose">
+      <h2>关于我</h2>
+      <p>你好，我是苏多莉亚。喜欢把想法变成可以使用的东西，也喜欢在折腾的过程中，慢慢弄懂「为什么」。</p>
+      <p>这里是我的个人博客，分享前端开发、工具实践和一些生活记录。不追求每篇文章都面面俱到，只希望真实地留下思考与成长的过程。</p>
+      <blockquote><p>保持好奇，认真生活。做一点自己喜欢的事，也把喜欢分享给别人。</p></blockquote>
+      <h2>正在折腾什么</h2>
+    </div>
+    <div class="interest-grid"><div><span class="icon-[lucide--code-xml]" aria-hidden="true"></span><strong>写一点代码</strong><p>Astro、Vue、TypeScript<br />把灵感变成小小的作品</p></div><div><span class="icon-[lucide--coffee]" aria-hidden="true"></span><strong>过一点生活</strong><p>音乐、散步、碎碎念<br />收藏平凡日子里的亮光</p></div></div>
+    <div class="prose">
+      <h2>关于 Kanade</h2>
+      <p>Kanade，一个记录热爱的小站。名字来自「奏」的读音，希望文字与代码也能像音符一样，组成属于自己的旋律。</p>
+      <p>小站使用 Astro、Vue 与 Tailwind CSS 构建。粉色、圆角、轻轻流动的波浪，是想留给每位访客的一点温柔。</p>
+      <h2>关于这里的内容</h2>
+      <p>当前文章用于展示小站的阅读与分类体验，生活随笔已标注为示例。后续会逐步替换成真实的学习笔记与日常记录。文章中若有疏漏，欢迎通过 GitHub 交流。</p>
+    </div>
+    <div class="about-links"><a class="btn" href={personalInfo.github} target="_blank" rel="noopener noreferrer"><span class="icon-[jam--github]" aria-hidden="true"></span>GitHub</a><a class="btn secondary" href="/posts/">读读我的文章<span class="icon-[lucide--arrow-right]" aria-hidden="true"></span></a></div>
+    <div class="about-end">谢谢你，在互联网的某个角落找到了这里。<span>✿</span></div>
+  </section>
+</BlogLayout>
+<style>
+.about-intro { display: flex; align-items: center; gap: 22px; }
+.about-intro img { border-radius: 26px; transform: rotate(-4deg); box-shadow: 5px 5px 0 var(--accent-soft); }
+.about-intro .eyebrow { font-size: 9px; }
+.about-intro h2 { font-size: 23px; margin: 7px 0; }
+.about-intro p { color: var(--muted); font-size: 11px; margin: 0; }
+.interest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.interest-grid > div { border-radius: 12px; background: var(--accent-soft); padding: 20px; }
+.interest-grid span { color: var(--accent); font-size: 25px; display: block; margin-bottom: 13px; }
+.interest-grid strong { font-size: 14px; font-weight: 400; }
+.interest-grid p { font-size: 11px; line-height: 2; color: var(--muted); margin-bottom: 0; }
+.about-links { display: flex; flex-wrap: wrap; gap: 12px; margin: 25px 0; font-size: 12px; }
+.about-end { text-align: center; border-top: 1px dashed var(--line); margin-top: 32px; padding-top: 25px; color: var(--muted); font-size: 11px; }
+.about-end span { display:block; font-size: 22px; color: var(--accent); margin-top: 10px; }
+@media(max-width:480px) { .about-intro { flex-direction: column; text-align: center; } .about-intro h2 { font-size: 21px; } .interest-grid { gap: 10px; } .interest-grid > div { padding: 15px; } }
+</style>

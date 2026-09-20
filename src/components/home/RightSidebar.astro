@@ -1,0 +1,49 @@
+---
+import type { PostSummary } from "../../lib/posts";
+interface Props { posts: PostSummary[] }
+const { posts } = Astro.props;
+const months = [...new Set(posts.map(p => p.date.slice(0, 7)))];
+---
+<aside class="right-sidebar" aria-label="站点动态">
+  <section class="card panel notice-card">
+    <h2 class="panel-title"><span class="icon-[lucide--megaphone]" aria-hidden="true"></span>小站公告<span class="notice-dot"></span></h2>
+    <p>嗨，欢迎来到我的小小世界 <span class="accent">✿</span></p>
+    <p>这里有代码，有日常，也有一些天马行空的想法。希望你能在这里找到一点共鸣。</p>
+    <a href="/about/" class="text-link">认识一下我<span class="icon-[lucide--arrow-right]" aria-hidden="true"></span></a>
+  </section>
+  <section class="card panel recent-panel">
+    <h2 class="panel-title"><span class="icon-[lucide--clock-3]" aria-hidden="true"></span>最近更新</h2>
+    <ol>{posts.slice(0, 4).map((post, index) => <li><span class="recent-number">{String(index + 1).padStart(2, "0")}</span><a href={`/posts/${post.id}/`}><h3>{post.title}</h3><time datetime={post.date}>{post.date.replaceAll("-", ".")}</time></a></li>)}</ol>
+  </section>
+  <section class="card panel archive-panel">
+    <h2 class="panel-title"><span class="icon-[lucide--calendar-days]" aria-hidden="true"></span>时光归档</h2>
+    {months.map(month => <a href={`/posts/?month=${month}`}><span>{month.replace("-", " 年 ")} 月</span><span>{posts.filter(p => p.date.startsWith(month)).length} 篇</span></a>)}
+  </section>
+  <section class="card quote-card"><span class="quote-mark">“</span><p>日子很长，<br />要把喜欢的事，<br />慢慢做。</p><span class="quote-source">A LITTLE REMINDER</span><span class="quote-flower" aria-hidden="true">✿</span></section>
+  <section class="site-notes"><span class="icon-[lucide--sprout]" aria-hidden="true"></span><p>小站正在慢慢生长中</p><span>记录 · 分享 · 保持好奇</span></section>
+</aside>
+<style>
+.notice-card { background: linear-gradient(135deg, var(--card), var(--accent-soft)); }
+.notice-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-left: auto; }
+.notice-card p { font-size: 11px; line-height: 2; color: var(--muted); margin: 8px 0 11px; }
+.notice-card p:first-of-type { color: var(--text); }
+.notice-card .text-link { font-size: 11px; margin-top: 3px; }
+.recent-panel ol { list-style: none; padding: 0; margin: 0; }
+.recent-panel li { display: flex; align-items: start; gap: 10px; margin-top: 16px; }
+.recent-number { flex: 0 0 18px; white-space: nowrap; font: 13px "Oxanium-Medium"; color: #d7b1bf; line-height: 1.7; }
+.recent-panel h3 { margin: 0; font-size: 11px; line-height: 1.8; font-weight: 400; }
+.recent-panel a:hover h3 { color: var(--accent); }
+.recent-panel time { color: var(--muted); font: 9px "Oxanium-Medium"; }
+.archive-panel > a { display: flex; justify-content: space-between; margin-top: 14px; font-size: 11px; }
+.archive-panel > a span:last-child { color: var(--muted); font-size: 10px; }
+.archive-panel > a:hover { color: var(--accent); }
+.quote-card { position: relative; overflow: hidden; padding: 22px 25px 26px; background: linear-gradient(135deg, var(--accent-soft), var(--card)); }
+.quote-mark { font-family: Georgia, serif; font-size: 50px; line-height: 1; color: #ddb4c0; }
+.quote-card p { margin: -4px 0 15px; font-size: 16px; line-height: 2; color: var(--accent); }
+.quote-source { font: 7px "Oxanium-Medium"; letter-spacing: .14em; color: var(--muted); }
+.quote-flower { position: absolute; right: -13px; bottom: -42px; font-size: 130px; color: #e6b4c41a; line-height: 1.2; }
+.site-notes { text-align: center; color: var(--muted); padding: 2px 0; }
+.site-notes > span:first-child { font-size: 18px; color: #91ae92; }
+.site-notes p { font-size: 11px; margin: 5px 0; }
+.site-notes > span:last-child { font-size: 9px; opacity: .7; }
+</style>

@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+<BaseLayout title="页面走丢了" heroTitle="偶尔迷路，也没关系" heroSubtitle="换个方向，也许会遇见新的风景。">
+  <div class="shell missing-page"><div class="card page-card"><span class="missing-number">404</span><h2>这页故事，暂时还没写到</h2><p>页面可能搬家了，或者链接里有一个小小的笔误。</p><a href="/" class="btn">回到首页</a><a href="/posts/" class="btn secondary">随便读读</a></div></div>
+</BaseLayout>
+<style>
+.missing-page { padding-top: 25px; padding-bottom: 50px; max-width: 720px; text-align: center; }
+.missing-number { font: 85px "Oxanium-Medium"; color: var(--accent); }
+.missing-page h2 { font-size: 23px; margin: 8px; }
+.missing-page p { color: var(--muted); font-size: 13px; margin: 15px 0 25px; }
+.missing-page .btn { margin: 5px; font-size: 13px; }
+</style>

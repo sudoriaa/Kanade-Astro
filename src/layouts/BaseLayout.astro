@@ -1,42 +1,64 @@
 ---
-// 引入网站配置信息、依赖
 import { siteInfo } from "../config";
-import '/src/styles/global.css';
-
-import Navigation from '../components/header/Navigation.vue';
-import Welcome from '../components/header/Welcome.astro';
-import MainContainer from '../components/MainContainer.vue';
-import CustomScrollbar from '../components/CustomScrollbar.vue';
+import "../styles/global.css";
+import Navigation from "../components/header/Navigation.vue";
+import Welcome from "../components/header/Welcome.astro";
+import Search from "../components/header/Search.vue";
+import MainContainer from "../components/MainContainer.vue";
+import { getPosts, summarize } from "../lib/posts";
+interface Props { title?: string; description?: string; heroTitle?: string; heroSubtitle?: string; home?: boolean; article?: boolean }
+const { title, description = siteInfo.description, heroTitle, heroSubtitle, home = false, article = false } = Astro.props;
+const posts = (await getPosts()).map(summarize);
+const pageTitle = title ? `${title} · ${siteInfo.title}` : `${siteInfo.title} · 记录热爱与日常`;
+const canonical = new URL(Astro.url.pathname, siteInfo.url);
 ---
-
+<!doctype html>
 <html lang="zh-CN">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={siteInfo.description}>
-		<meta name="keywords" content={siteInfo.keywords.join(", ")}>
-		<title>{siteInfo.title}</title>
-		<script is:inline>
-			// 防止页面闪烁，在 HTML 解析前立即应用主题
-			(function() {
-				const stored = localStorage.getItem('theme');
-				const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-				const theme = stored || (prefersDark ? 'dark' : 'light');
-				if (theme === 'dark') {
-					document.documentElement.classList.add('dark');
-				}
-			})();
-		</script>
-	</head>
-	<body>
-		<CustomScrollbar client:load />
-		<Navigation client:load/>
-		<Welcome client:load/>
-		<MainContainer>
-			<slot />
-		</MainContainer>
-		
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={siteInfo.keywords.join(", ")} />
+    <meta name="theme-color" content="#fff1f1" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={article ? "article" : "website"} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL("/images/hero.webp", siteInfo.url)} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title="Kanade RSS" href="/rss.xml" />
+    <link rel="preload" href="/fonts/ZaoZiGongFangYueYuan.woff2" as="font" type="font/woff2" crossorigin />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      (() => {
+        let theme;
+        try { theme = localStorage.getItem("theme"); } catch {}
+        document.documentElement.classList.toggle("dark", theme === "dark" || (theme !== "light" && matchMedia("(prefers-color-scheme: dark)").matches));
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到正文</a>
+    <Navigation pathname={Astro.url.pathname} client:load />
+    <Search posts={posts} client:load />
+    <Welcome compact={!home} title={heroTitle} subtitle={heroSubtitle} />
+    <MainContainer>
+      <main id="main-content" tabindex="-1"><slot /></main>
+    </MainContainer>
+    <footer class="site-footer">
+      <a href="/" class="footer-mark"><span class="accent">✿</span> Kanade.</a>
+      <p>在这里，记录每一次心动与成长。</p>
+      <p>© {new Date().getFullYear()} Sudoria · Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> &amp; <span class="accent">♥</span> · <a href="/rss.xml">RSS 订阅</a> · <a href="/about/">关于本站</a></p>
+    </footer>
+    <button class="back-top" id="back-top" aria-label="回到顶部" hidden><span class="icon-[lucide--arrow-up]"></span></button>
+    <script>
+      const button = document.querySelector<HTMLButtonElement>("#back-top");
+      const update = () => { if (button) button.hidden = window.scrollY < 500; };
+      window.addEventListener("scroll", update, { passive: true });
+      button?.addEventListener("click", () => window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" }));
+      update();
+    </script>
+  </body>
 </html>
