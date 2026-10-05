@@ -12,10 +12,10 @@
     "deploy:local": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/preview.ps1"
   },
   "dependencies": {
-    "@astrojs/vue": "^5.1.4",
+    "@astrojs/vue": "^7.0.3",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.16.9",
+    "astro": "^7.3.5",
     "tailwindcss": "^4.1.18",
     "vue": "^3.5.26"
   },
