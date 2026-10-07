@@ -2,7 +2,7 @@
 
 # Kanade · 奏
 
-一个记录热爱与日常的个人博客。
+一个记录热爱与日常的 Astro 7 博客模板。
 
 基于 Astro、Vue 和 Tailwind CSS 构建，以插画首屏、粉色圆角卡片和轻盈波浪，收藏代码、灵感与生活。
 
@@ -38,7 +38,7 @@
 
 | 技术 | 用途 |
 | --- | --- |
-| Astro 5 | 页面路由、内容集合与静态构建 |
+| Astro 7 | 页面路由、内容集合与静态构建 |
 | Vue 3 | 搜索、筛选、导航和留言等交互组件 |
 | Tailwind CSS 4 | 样式工具与主题基础 |
 | TypeScript 5 | 类型约束与静态检查 |
@@ -189,7 +189,7 @@ draft: false
 将 `.env.example` 复制为 `.env`，填写最终域名：
 
 ```dotenv
-SITE_URL=https://your-blog.example
+SITE_URL=https://example.com
 ```
 
 也可以直接在托管平台设置同名环境变量。修改后重新构建，RSS、站点地图、canonical 和 Open Graph 中的地址会随之更新。未设置时默认使用 `http://localhost:4321`。
