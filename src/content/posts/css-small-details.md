@@ -6,6 +6,7 @@ category: "前端开发"
 tags: ["CSS", "设计", "用户体验"]
 cover: "css"
 ---
+
 ## 从留白开始
 
 当一张卡片显得拥挤时，先别急着缩小字体。试着增加内容间距，减少同一层级的信息数量，给标题和正文明确的节奏。
@@ -35,8 +36,12 @@ cover: "css"
 
 ```css
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .card { transition: none; }
+  html {
+    scroll-behavior: auto;
+  }
+  .card {
+    transition: none;
+  }
 }
 ```
 

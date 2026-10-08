@@ -1,0 +1,24 @@
+---
+import { t } from "../../i18n";
+import type { PostSummary } from "../../lib/posts";
+interface Props {
+  posts: PostSummary[];
+}
+const { posts } = Astro.props;
+---
+
+<noscript>
+  <section class="card page-card" aria-label={t("post.all")}>
+    <h2>{t("post.all")}</h2>
+    <p>{t("post.noScript")}</p>
+    <ul>
+      {posts.map((post) => (
+        <li>
+          <a class="text-link" href={`/posts/${post.id}/`}>
+            {post.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</noscript>

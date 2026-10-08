@@ -6,6 +6,7 @@ category: "前端开发"
 tags: ["Vue", "TypeScript", "组件设计"]
 cover: "vue"
 ---
+
 ## 从具体需求开始
 
 当两个组件都需要监听窗口宽度时，可以先写出两份简单实现，再观察它们真正共享了什么。过早抽象通常会把尚未稳定的需求固定下来。
@@ -21,7 +22,9 @@ import { ref, onMounted, onUnmounted } from "vue";
 
 export function useWindowWidth() {
   const width = ref(0);
-  const update = () => { width.value = window.innerWidth; };
+  const update = () => {
+    width.value = window.innerWidth;
+  };
 
   onMounted(() => {
     update();

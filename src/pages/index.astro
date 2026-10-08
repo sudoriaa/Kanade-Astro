@@ -1,17 +1,56 @@
 ---
+import { t } from "../i18n";
 import BlogLayout from "../layouts/BlogLayout.astro";
 import PostFeed from "../components/posts/PostFeed.vue";
+import PostListFallback from "../components/posts/PostListFallback.astro";
 import { getPosts, summarize } from "../lib/posts";
 const posts = (await getPosts()).map(summarize);
 ---
+
 <BlogLayout home>
-  <div class="hello-strip"><span class="icon-[lucide--sparkles]" aria-hidden="true"></span><p>你好呀，远道而来的朋友，今天也要开心哦！</p><span class="hello-pill">HAVE A NICE DAY</span></div>
+  <div class="hello-strip">
+    <span class="icon-[lucide--sparkles]" aria-hidden="true"></span>
+    <p>{t("home.greeting")}</p>
+    <span class="hello-pill">{t("home.greetingBadge")}</span>
+  </div>
   <PostFeed posts={posts} client:load />
+  <PostListFallback posts={posts} />
 </BlogLayout>
 <style>
-.hello-strip { display: flex; align-items: center; gap: 9px; color: var(--accent); font-size: 11px; margin: 0 0 21px; padding: 11px 15px; border: 1px dashed #ebbbc980; border-radius: 11px; background: #ffffff25; }
-.hello-strip > span:first-child { font-size: 17px; flex-shrink: 0; }
-.hello-strip p { margin: 0; flex: 1; }
-.hello-pill { font: 7px "Oxanium-Medium", sans-serif; letter-spacing: .05em; opacity: .65; }
-@media(max-width:760px) { .hello-strip { font-size: 10px; margin-bottom: 22px; } .hello-pill { display: none; } }
+  .hello-strip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--accent);
+    font-size: 11px;
+    margin: 0 0 21px;
+    padding: 11px 15px;
+    border: 1px dashed #ebbbc980;
+    border-radius: 11px;
+    background: #ffffff25;
+  }
+  .hello-strip > span:first-child {
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .hello-strip p {
+    margin: 0;
+    flex: 1;
+  }
+  .hello-pill {
+    font:
+      7px "Oxanium-Medium",
+      var(--font-body);
+    letter-spacing: 0.05em;
+    opacity: 0.65;
+  }
+  @media (max-width: 760px) {
+    .hello-strip {
+      font-size: 10px;
+      margin-bottom: 22px;
+    }
+    .hello-pill {
+      display: none;
+    }
+  }
 </style>

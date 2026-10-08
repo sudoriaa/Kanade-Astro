@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.git/
+.preview/
+.playwright-mcp/
+test-results/
+playwright-report/
+pnpm-lock.yaml
+docs/images/
