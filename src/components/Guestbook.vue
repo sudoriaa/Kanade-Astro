@@ -1,12 +1,22 @@
 <script setup lang="ts">
+import { t, locale } from "../i18n";
+import { personalInfo } from "../config";
 import { ref, computed, onMounted, nextTick } from "vue";
 
 const paperColors = [
-  { value: "butter", label: "奶油黄", mood: "留一点阳光" },
-  { value: "rose", label: "樱花粉", mood: "送一份温柔" },
-  { value: "mint", label: "薄荷绿", mood: "收集小确幸" },
-  { value: "sky", label: "晴空蓝", mood: "写一个愿望" },
-  { value: "lilac", label: "浅芋紫", mood: "藏一点浪漫" },
+  {
+    value: "butter",
+    label: t("paper.butter.label"),
+    mood: t("paper.butter.mood"),
+  },
+  { value: "rose", label: t("paper.rose.label"), mood: t("paper.rose.mood") },
+  { value: "mint", label: t("paper.mint.label"), mood: t("paper.mint.mood") },
+  { value: "sky", label: t("paper.sky.label"), mood: t("paper.sky.mood") },
+  {
+    value: "lilac",
+    label: t("paper.lilac.label"),
+    mood: t("paper.lilac.mood"),
+  },
 ] as const;
 type PaperColor = (typeof paperColors)[number]["value"];
 type Message = {
@@ -83,7 +93,7 @@ onMounted(() => {
           .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
       : [];
   } catch {
-    error.value = "浏览器存储暂不可用。你仍可以编辑文字，请复制留存。";
+    error.value = t("guestbook.storageUnavailable");
   }
   ready.value = true;
 });
@@ -93,8 +103,7 @@ function save(next: Message[]) {
     messages.value = next;
     return true;
   } catch {
-    error.value =
-      "留言未保存：浏览器存储已满或已被关闭，请复制文字留存后重试。";
+    error.value = t("guestbook.saveFailed");
     return false;
   }
 }
@@ -104,15 +113,15 @@ async function submit() {
   const author = name.value.trim();
   const text = content.value.trim();
   if (!author || !text) {
-    error.value = "请填写昵称和想说的话。";
+    error.value = t("guestbook.required");
     return;
   }
   if (author.length > 24 || text.length > 500) {
-    error.value = "昵称最多 24 字，留言最多 500 字。";
+    error.value = t("guestbook.limit");
     return;
   }
   if (messages.value.length >= 100) {
-    error.value = "本地已保存 100 条留言，删除一些旧留言后再试试。";
+    error.value = t("guestbook.full");
     return;
   }
   const id =
@@ -133,7 +142,7 @@ async function submit() {
     freshId.value = id;
     newestFirst.value = true;
     content.value = "";
-    feedback.value = "便签已贴上墙！已保存在当前浏览器，刷新后仍可查看。";
+    feedback.value = t("guestbook.saved");
     await nextTick();
     document.getElementById(`note-${id}`)?.scrollIntoView({
       block: "nearest",
@@ -146,7 +155,7 @@ async function submit() {
 function remove(id: string) {
   error.value = "";
   if (save(messages.value.filter((message) => message.id !== id)))
-    feedback.value = "这张便签已从留言墙取下。";
+    feedback.value = t("guestbook.removed");
 }
 function emoji(value: string) {
   if (content.value.length + value.length <= 500) content.value += value;
@@ -156,7 +165,7 @@ function startWriting() {
   textarea.value?.focus();
 }
 function dateLabel(date: string) {
-  return new Intl.DateTimeFormat("zh-CN", {
+  return new Intl.DateTimeFormat(locale, {
     month: "2-digit",
     day: "2-digit",
     year: "numeric",
@@ -171,15 +180,14 @@ function tilt(id: string) {
   <div class="guestbook" :data-ready="ready">
     <header class="wall-heading">
       <div>
-        <span class="eyebrow">LITTLE NOTES, WARM CONNECTIONS</span>
-        <h2>把心情，贴在这里<span aria-hidden="true">✿</span></h2>
-        <p>
-          选一张喜欢的颜色，留下一点此刻的心情。每一句话，都值得被好好收藏。
-        </p>
+        <span class="eyebrow">{{ t("guestbook.eyebrow") }}</span>
+        <h2>{{ t("guestbook.heading") }}<span aria-hidden="true">✿</span></h2>
+        <p>{{ t("guestbook.intro") }}</p>
       </div>
       <div class="wall-stamp" aria-hidden="true">
-        <span class="icon-[lucide--mail-open]"></span><span>见字如面</span
-        ><small>WITH LOVE</small>
+        <span class="icon-[lucide--mail-open]"></span
+        ><span>{{ t("guestbook.stamp") }}</span
+        ><small>{{ t("guestbook.withLove") }}</small>
       </div>
     </header>
 
@@ -188,13 +196,13 @@ function tilt(id: string) {
         <div class="composer-heading">
           <h3 id="compose-title">
             <span class="icon-[lucide--pencil-line]" aria-hidden="true"></span
-            >写一张便签
+            >{{ t("guestbook.compose") }}
           </h3>
-          <span class="compose-step">MAKE A LITTLE MARK</span>
+          <span class="compose-step">{{ t("guestbook.composeStep") }}</span>
         </div>
         <form @submit.prevent="submit">
           <fieldset class="color-picker">
-            <legend>今天的心情是什么颜色？</legend>
+            <legend>{{ t("guestbook.chooseColor") }}</legend>
             <div class="color-options">
               <label
                 v-for="paper in paperColors"
@@ -225,7 +233,7 @@ function tilt(id: string) {
           <div class="writing-paper paper" :data-color="selectedColor">
             <span class="paper-tape" aria-hidden="true"></span>
             <label class="field-label" for="guest-name"
-              >怎么称呼你 <span>*</span></label
+              >{{ t("guestbook.name") }}<span>*</span></label
             >
             <input
               id="guest-name"
@@ -233,12 +241,12 @@ function tilt(id: string) {
               class="paper-input"
               type="text"
               autocomplete="nickname"
-              placeholder="留下你的昵称"
+              :placeholder="t('guestbook.namePlaceholder')"
               maxlength="24"
               required
             />
             <label class="field-label" for="guest-content"
-              >想说的话 <span>*</span></label
+              >{{ t("guestbook.content") }}<span>*</span></label
             >
             <textarea
               id="guest-content"
@@ -246,7 +254,7 @@ function tilt(id: string) {
               v-model="content"
               class="paper-input"
               rows="5"
-              placeholder="路过这里，想对你说…"
+              :placeholder="t('guestbook.contentPlaceholder')"
               maxlength="500"
               required
             ></textarea>
@@ -264,16 +272,17 @@ function tilt(id: string) {
                 :key="item"
                 type="button"
                 @click="emoji(item)"
-                :aria-label="`插入表情 ${item}`"
+                :aria-label="t('guestbook.insertEmoji', { emoji: item })"
               >
                 {{ item }}
               </button>
             </div>
-            <span>加一点心情</span>
+            <span>{{ t("guestbook.emojiHint") }}</span>
           </div>
           <button type="submit" class="btn stick-button" :disabled="!ready">
             <span class="icon-[lucide--pin]" aria-hidden="true"></span
-            >贴到留言墙<span
+            >{{ t("guestbook.submit")
+            }}<span
               class="icon-[lucide--arrow-up-right]"
               aria-hidden="true"
             ></span>
@@ -283,9 +292,7 @@ function tilt(id: string) {
         </form>
         <div class="local-notice">
           <span class="icon-[lucide--lock-keyhole]" aria-hidden="true"></span>
-          <p>
-            这是你的本地留言墙。便签仅保存在当前浏览器，仅你可见，不会发送给站长或跨设备同步。
-          </p>
+          <p>{{ t("guestbook.localNotice") }}</p>
         </div>
       </section>
 
@@ -293,17 +300,21 @@ function tilt(id: string) {
         <div class="board-toolbar">
           <div>
             <span class="icon-[lucide--sticky-note]" aria-hidden="true"></span>
-            <h3 id="board-title">心意收集处</h3>
-            <span class="note-count">{{ messages.length }} 张便签</span>
+            <h3 id="board-title">{{ t("guestbook.board") }}</h3>
+            <span class="note-count">{{
+              t("guestbook.count", { count: messages.length })
+            }}</span>
           </div>
           <button
             type="button"
             class="sort-button"
             @click="newestFirst = !newestFirst"
-            :aria-label="newestFirst ? '切换为最早优先' : '切换为最新优先'"
+            :aria-label="
+              newestFirst ? t('guestbook.sortOld') : t('guestbook.sortNew')
+            "
           >
             <span class="icon-[lucide--arrow-down-up]" aria-hidden="true"></span
-            >{{ newestFirst ? "最新贴上" : "最早贴上" }}
+            >{{ newestFirst ? t("guestbook.newest") : t("guestbook.oldest") }}
           </button>
         </div>
         <div class="wall-canvas" :aria-busy="!ready">
@@ -316,20 +327,20 @@ function tilt(id: string) {
               :class="{ 'just-posted': freshId === message.id }"
               :data-color="message.color"
               :style="{ '--tilt': tilt(message.id) }"
-              :aria-label="`${message.name} 的便签`"
+              :aria-label="t('guestbook.noteLabel', { name: message.name })"
             >
               <span class="paper-tape" aria-hidden="true"></span>
               <button
                 type="button"
                 class="remove-note"
                 @click="remove(message.id)"
-                :aria-label="`删除 ${message.name} 的留言`"
-                title="取下这张便签"
+                :aria-label="t('guestbook.delete', { name: message.name })"
+                :title="t('guestbook.remove')"
               >
                 <span class="icon-[lucide--x]" aria-hidden="true"></span>
               </button>
               <span class="note-hello" aria-hidden="true"
-                >Dear, today <span>✧</span></span
+                >{{ t("guestbook.dearToday") }}<span>✧</span></span
               >
               <div class="message-main">
                 <p>{{ message.content }}</p>
@@ -352,28 +363,32 @@ function tilt(id: string) {
               class="sticky-note paper welcome-note"
               data-color="rose"
               style="--tilt: -1.2deg"
-              aria-label="小站寄语"
+              :aria-label="t('guestbook.welcomeLabel')"
             >
               <span class="paper-tape" aria-hidden="true"></span>
               <span class="note-hello"
-                >小站寄语 <span aria-hidden="true">♡</span></span
+                >{{ t("guestbook.welcomeLabel")
+                }}<span aria-hidden="true">♡</span></span
               >
               <div class="message-main">
-                <h4>很高兴，在这里遇见你。</h4>
+                <h4>{{ t("guestbook.welcomeTitle") }}</h4>
                 <p>
-                  一句问候，一个愿望，<br />或是今天遇见的小确幸。<br /><br />把想说的话留在这里，<br />让平凡的一天多一点颜色。
+                  {{ t("guestbook.welcomeMessage") }}
                 </p>
               </div>
               <footer class="note-footer">
                 <div class="note-author">
                   <img
-                    src="/images/sudoria.jpg"
+                    :src="personalInfo.avatar"
                     alt=""
                     width="24"
                     height="24"
-                  /><strong>苏多莉亚</strong>
+                  /><strong>{{ personalInfo.name }}</strong>
                 </div>
-                <span>欢迎路过 <span aria-hidden="true">✿</span></span>
+                <span
+                  >{{ t("guestbook.welcomeVisitor")
+                  }}<span aria-hidden="true">✿</span></span
+                >
               </footer>
               <span class="paper-fold" aria-hidden="true"></span>
             </article>
@@ -382,18 +397,21 @@ function tilt(id: string) {
               class="sticky-note paper inspiration-note"
               data-color="mint"
               style="--tilt: 1.6deg"
-              aria-label="写作灵感"
+              :aria-label="t('guestbook.inspirationLabel')"
             >
               <span class="paper-tape" aria-hidden="true"></span>
               <span class="note-hello"
-                >一点灵感 <span aria-hidden="true">✧</span></span
+                >{{ t("guestbook.inspirationEyebrow")
+                }}<span aria-hidden="true">✧</span></span
               >
               <span class="inspiration-flower" aria-hidden="true">✿</span>
-              <h4>不知道写点什么？</h4>
+              <h4>{{ t("guestbook.inspirationTitle") }}</h4>
               <p>
-                今天有什么让你笑了一下？<br />最近在听哪一首歌？<br />想对未来的自己说什么？
+                {{ t("guestbook.inspirationText") }}
               </p>
-              <span class="inspiration-sign">小事也值得被记录。</span>
+              <span class="inspiration-sign">{{
+                t("guestbook.inspirationSign")
+              }}</span>
               <span class="paper-fold" aria-hidden="true"></span>
             </article>
             <button
@@ -403,8 +421,8 @@ function tilt(id: string) {
               @click="startWriting"
             >
               <span class="icon-[lucide--plus]" aria-hidden="true"></span
-              ><strong>第一张便签，留给你</strong
-              ><span>写下此刻，贴上一点温柔</span
+              ><strong>{{ t("guestbook.first") }}</strong
+              ><span>{{ t("guestbook.firstHint") }}</span
               ><span class="empty-arrow" aria-hidden="true">↖</span>
             </button>
           </div>
@@ -413,8 +431,8 @@ function tilt(id: string) {
             <p>
               {{
                 messages.length
-                  ? "每一张便签，都是认真生活的小小证据。"
-                  : "墙面还很空，但好故事总是从第一句话开始。"
+                  ? t("guestbook.boardFull")
+                  : t("guestbook.boardEmpty")
               }}
             </p>
             <span></span>
@@ -424,12 +442,16 @@ function tilt(id: string) {
     </div>
     <p class="wall-footnote">
       <span class="icon-[lucide--heart]" aria-hidden="true"></span
-      >风会吹走烦恼，文字会留下温度。
+      >{{ t("guestbook.footnote") }}
     </p>
   </div>
 </template>
 
 <style scoped>
+.welcome-note .message-main p,
+.inspiration-note > p {
+  white-space: pre-line;
+}
 .wall-heading {
   display: flex;
   justify-content: space-between;
@@ -484,7 +506,7 @@ function tilt(id: string) {
 .wall-stamp small {
   font:
     7px "Oxanium-Medium",
-    sans-serif;
+    var(--font-body);
   letter-spacing: 0.18em;
 }
 .wall-layout {
@@ -520,7 +542,7 @@ function tilt(id: string) {
 .compose-step {
   font:
     7px "Oxanium-Medium",
-    sans-serif;
+    var(--font-body);
   color: var(--muted);
   letter-spacing: 0.07em;
 }
@@ -749,7 +771,7 @@ textarea.paper-input {
   color: var(--paper-muted);
 }
 .writing-bottom > span:last-child {
-  font-family: "Oxanium-Medium", sans-serif;
+  font-family: "Oxanium-Medium", var(--font-body);
 }
 .message-toolbar {
   display: flex;
@@ -919,8 +941,7 @@ textarea.paper-input {
   gap: 10px;
   font:
     9px "Oxanium-Medium",
-    "ZaoZiGongFangYueYuan",
-    sans-serif;
+    var(--font-body);
   color: var(--paper-muted);
   margin: 3px 0 17px;
   letter-spacing: 0.06em;
@@ -987,7 +1008,7 @@ textarea.paper-input {
   flex-shrink: 0;
 }
 .note-footer time {
-  font-family: "Oxanium-Medium", sans-serif;
+  font-family: "Oxanium-Medium", var(--font-body);
   font-size: 8px;
 }
 .remove-note {
@@ -1089,9 +1110,7 @@ textarea.paper-input {
   position: absolute;
   bottom: 22px;
   left: 24px;
-  font:
-    35px Georgia,
-    serif;
+  font: 35px var(--font-body);
   color: #ce9ead;
   transform: rotate(-25deg);
   opacity: 0.7;

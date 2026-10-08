@@ -1,106 +1,121 @@
 import { test, expect } from "@playwright/test";
+import { t, language, ogLocale } from "../src/i18n";
+import settings from "../src/site.config.json" with { type: "json" };
 
-test("首页分类、分页与 URL 刷新恢复", async ({ page }) => {
+test("Home categories, pagination, and URL state after reload", async ({
+  page,
+}) => {
   await page.goto("/");
   await expect(page.locator(".post-feed")).toHaveAttribute(
     "data-ready",
     "true",
   );
   await expect(page.locator(".post-card")).toHaveCount(5);
-  await page.getByRole("button", { name: "下一页", exact: true }).click();
+  await page
+    .getByRole("button", { name: t("post.nextPage"), exact: true })
+    .click();
   await expect(page).toHaveURL(/page=2/);
   await expect(page.locator(".post-card")).toHaveCount(3);
   await page.reload();
   await expect(page.locator(".post-card")).toHaveCount(3);
-  await page.getByRole("button", { name: "前端开发", exact: true }).click();
+  await page
+    .getByRole("button", { name: t("category.frontend"), exact: true })
+    .click();
   await expect(page.locator(".post-card")).toHaveCount(4);
   await expect(
-    page.locator('.post-card:not([data-category="前端开发"])'),
+    page.locator('.post-card:not([data-category="frontend"])'),
   ).toHaveCount(0);
   await expect(page).toHaveURL(/category=/);
 });
 
-test("标签、月份与不存在的分类", async ({ page }) => {
+test("Tags, month archives, and an unknown category", async ({ page }) => {
   await page.goto("/posts/?tag=Vue");
   await expect(page.locator(".post-card")).toHaveCount(2);
   await page.goto("/posts/?month=2026-08");
   await expect(page.locator(".post-card")).toHaveCount(2);
   await expect(page.locator(".filter-summary")).toContainText("2026-08");
   await page.goto("/posts/?category=missing&page=-5");
-  await expect(page.getByText("这一页，还等着新的故事")).toBeVisible();
-  await page.getByRole("button", { name: "查看全部文章" }).click();
+  await expect(page.getByText(t("post.emptyTitle"))).toBeVisible();
+  await page.getByRole("button", { name: t("post.viewAll") }).click();
   await expect(page.locator(".post-card")).toHaveCount(5);
 });
 
-test("全站搜索、空结果和焦点恢复", async ({ page }) => {
+test("Search, empty results, and focus restoration", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".post-feed")).toHaveAttribute(
     "data-ready",
     "true",
   );
-  const opener = page.getByRole("button", { name: "搜索文章", exact: true });
+  const opener = page.getByRole("button", {
+    name: t("nav.search"),
+    exact: true,
+  });
   await opener.click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
-  await page.getByRole("searchbox", { name: "搜索关键词" }).fill("CSS");
+  await page.getByRole("searchbox", { name: t("search.keywords") }).fill("CSS");
   await expect(dialog.locator(".search-result")).toHaveCount(1);
   await page
-    .getByRole("searchbox", { name: "搜索关键词" })
+    .getByRole("searchbox", { name: t("search.keywords") })
     .fill("no-such-post-9876");
-  await expect(dialog.getByText("还没有找到这段文字")).toBeVisible();
+  await expect(dialog.getByText(t("search.emptyTitle"))).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(dialog).not.toBeVisible();
   await expect(opener).toBeFocused();
   await page.keyboard.press("Control+k");
   await expect(dialog).toBeVisible();
-  await page.getByRole("searchbox", { name: "搜索关键词" }).fill("CSS");
+  await page.getByRole("searchbox", { name: t("search.keywords") }).fill("CSS");
   await dialog.locator(".search-result").click();
   await expect(page).toHaveURL(/css-small-details/);
   await expect(page.locator("#article-body")).toBeVisible();
 });
 
-test("深浅主题在刷新和跨页后保留", async ({ page }) => {
+test("Theme persistence across reloads and pages", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".post-feed")).toHaveAttribute(
     "data-ready",
     "true",
   );
-  await page.getByRole("button", { name: "切换深色模式" }).click();
+  await page.getByRole("button", { name: t("nav.dark") }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
   await expect(page.locator("html")).toHaveCSS("filter", "none");
   await page.reload();
   await expect(page.locator("html")).toHaveClass(/dark/);
   await page.goto("/about/");
   await expect(page.locator("html")).toHaveClass(/dark/);
-  await page.getByRole("button", { name: "切换浅色模式" }).click();
+  await page.getByRole("button", { name: t("nav.light") }).click();
   await expect(page.locator("html")).not.toHaveClass(/dark/);
 });
 
-test("彩色便签保存、转义、刷新和删除", async ({ page }) => {
+test("Colored notes: save, escape, reload, and delete", async ({ page }) => {
   await page.goto("/messages/");
   await expect(page.locator(".guestbook")).toHaveAttribute(
     "data-ready",
     "true",
   );
-  await page.getByLabel("怎么称呼你").fill("测试访客");
+  await page.getByLabel(t("guestbook.name")).fill("测试访客");
   const text = '<img src=x onerror="alert(1)"> 测试留言';
-  await page.getByLabel("想说的话").fill(text);
-  await page.getByRole("radio", { name: "晴空蓝" }).check();
-  await page.getByRole("button", { name: "贴到留言墙" }).click();
+  await page.getByRole("textbox", { name: t("guestbook.content") }).fill(text);
+  await page.getByRole("radio", { name: t("paper.sky.label") }).check();
+  await page.getByRole("button", { name: t("guestbook.submit") }).click();
   await expect(page.locator(".message")).toHaveAttribute("data-color", "sky");
   await expect(page.locator(".message .message-main > p")).toHaveText(text);
   await expect(page.locator(".message .message-main img")).toHaveCount(0);
-  await expect(page.getByRole("status")).toContainText("已保存在当前浏览器");
+  await expect(page.getByRole("status")).toContainText(t("guestbook.saved"));
   await page.reload();
   await expect(page.locator(".message .message-main > p")).toHaveText(text);
   await expect(page.locator(".message")).toHaveAttribute("data-color", "sky");
-  await page.getByRole("button", { name: "删除 测试访客 的留言" }).click();
+  await page
+    .getByRole("button", { name: t("guestbook.delete", { name: "测试访客" }) })
+    .click();
   await expect(page.locator(".message")).toHaveCount(0);
   await page.reload();
   await expect(page.locator(".message")).toHaveCount(0);
 });
 
-test("旧留言迁移、异常颜色回退与时间排序", async ({ page }) => {
+test("Legacy note migration, invalid colors, and chronological order", async ({
+  page,
+}) => {
   await page.goto("/messages/");
   await page.evaluate(() =>
     localStorage.setItem(
@@ -142,14 +157,16 @@ test("旧留言迁移、异常颜色回退与时间排序", async ({ page }) => 
       /^(butter|rose|mint|sky|lilac)$/,
     );
   }
-  await page.getByRole("button", { name: "切换为最早优先" }).click();
+  await page.getByRole("button", { name: t("guestbook.sortOld") }).click();
   await expect(page.locator(".message .note-author strong")).toHaveText([
     "旧访客",
     "新访客",
   ]);
-  await page.getByLabel("怎么称呼你").fill("迁移后访客");
-  await page.getByLabel("想说的话").fill("新旧留言一起保存");
-  await page.getByRole("button", { name: "贴到留言墙" }).click();
+  await page.getByLabel(t("guestbook.name")).fill("迁移后访客");
+  await page
+    .getByRole("textbox", { name: t("guestbook.content") })
+    .fill("新旧留言一起保存");
+  await page.getByRole("button", { name: t("guestbook.submit") }).click();
   await expect(page.locator(".message")).toHaveCount(3);
   await expect(page.locator(".message .note-author strong").first()).toHaveText(
     "迁移后访客",
@@ -163,32 +180,40 @@ test("旧留言迁移、异常颜色回退与时间排序", async ({ page }) => 
   ]);
 });
 
-test("五种便签、长留言及深色墙面布局", async ({ page }) => {
+test("Five note colors, long messages, and dark theme layout", async ({
+  page,
+}) => {
   await page.goto("/messages/");
   await expect(page.locator(".guestbook")).toHaveAttribute(
     "data-ready",
     "true",
   );
-  await page.getByRole("button", { name: "第一张便签，留给你" }).click();
-  await expect(page.getByLabel("想说的话")).toBeFocused();
-  const colors = ["奶油黄", "樱花粉", "薄荷绿", "晴空蓝", "浅芋紫"];
+  await page.getByRole("button", { name: t("guestbook.first") }).click();
+  await expect(
+    page.getByRole("textbox", { name: t("guestbook.content") }),
+  ).toBeFocused();
+  const colors = ["butter", "rose", "mint", "sky", "lilac"].map((color) =>
+    t(`paper.${color}.label` as Parameters<typeof t>[0]),
+  );
   for (const color of colors) {
     await page.getByRole("radio", { name: color }).check();
-    await page.getByLabel("怎么称呼你").fill(color);
+    await page.getByLabel(t("guestbook.name")).fill(color);
     await page
-      .getByLabel("想说的话")
+      .getByRole("textbox", { name: t("guestbook.content") })
       .fill(
-        color === "浅芋紫"
+        color === t("paper.lilac.label")
           ? "长留言".repeat(166) + "完结"
           : `${color}的心情\n今天也要开心`,
       );
-    await page.getByRole("button", { name: "贴到留言墙" }).click();
+    await page.getByRole("button", { name: t("guestbook.submit") }).click();
     await expect(
       page.locator(".message .note-author strong").first(),
     ).toHaveText(color);
   }
   await expect(page.locator(".message")).toHaveCount(5);
-  await expect(page.locator(".note-count")).toHaveText("5 张便签");
+  await expect(page.locator(".note-count")).toHaveText(
+    t("guestbook.count", { count: 5 }),
+  );
   expect(
     await page
       .locator(".message .message-main > p")
@@ -201,7 +226,7 @@ test("五种便签、长留言及深色墙面布局", async ({ page }) => {
       notes.map((note) => getComputedStyle(note).backgroundColor),
     );
   expect(new Set(lightColors).size).toBe(5);
-  await page.getByRole("button", { name: "切换深色模式" }).click();
+  await page.getByRole("button", { name: t("nav.dark") }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
   const darkColors = await page
     .locator(".message")
@@ -237,25 +262,29 @@ test("五种便签、长留言及深色墙面布局", async ({ page }) => {
   ).toBe(5);
 });
 
-test("损坏存储与空白留言可恢复", async ({ page }) => {
+test("Recovery from corrupt storage and blank messages", async ({ page }) => {
   await page.addInitScript(() =>
     localStorage.setItem("kanade:guestbook:v1", "broken-json"),
   );
   await page.goto("/messages/");
   await expect(page.getByRole("alert")).toBeVisible();
-  await page.getByLabel("怎么称呼你").fill("   ");
-  await page.getByLabel("想说的话").fill("   ");
-  await page.getByRole("button", { name: "贴到留言墙" }).click();
-  await expect(page.getByRole("alert")).toContainText("请填写昵称和想说的话");
-  await page.getByLabel("怎么称呼你").fill("访客");
-  await page.getByLabel("想说的话").fill("现在恢复正常");
-  await page.getByRole("button", { name: "贴到留言墙" }).click();
+  await page.getByLabel(t("guestbook.name")).fill("   ");
+  await page.getByRole("textbox", { name: t("guestbook.content") }).fill("   ");
+  await page.getByRole("button", { name: t("guestbook.submit") }).click();
+  await expect(page.getByRole("alert")).toContainText(t("guestbook.required"));
+  await page.getByLabel(t("guestbook.name")).fill("访客");
+  await page
+    .getByRole("textbox", { name: t("guestbook.content") })
+    .fill("现在恢复正常");
+  await page.getByRole("button", { name: t("guestbook.submit") }).click();
   await expect(page.locator(".message .message-main > p")).toHaveText(
     "现在恢复正常",
   );
 });
 
-test("禁止存储时主题可切换、留言报告未保存", async ({ page }) => {
+test("Blocked storage: themes work and notes report saving failure", async ({
+  page,
+}) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.addInitScript(() => {
@@ -275,20 +304,29 @@ test("禁止存储时主题可切换、留言报告未保存", async ({ page }) 
     "data-ready",
     "true",
   );
-  await page.getByRole("button", { name: "切换深色模式" }).click();
+  await page.getByRole("button", { name: t("nav.dark") }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
-  await page.getByLabel("怎么称呼你").fill("访客");
-  await page.getByLabel("想说的话").fill("这条应报告保存失败");
-  await page.getByRole("button", { name: "贴到留言墙" }).click();
-  await expect(page.getByRole("alert")).toContainText("留言未保存");
+  await page.getByLabel(t("guestbook.name")).fill("访客");
+  await page
+    .getByRole("textbox", { name: t("guestbook.content") })
+    .fill("这条应报告保存失败");
+  await page.getByRole("button", { name: t("guestbook.submit") }).click();
+  await expect(page.getByRole("alert")).toContainText(
+    t("guestbook.saveFailed"),
+  );
   await expect(page.locator(".message")).toHaveCount(0);
   expect(errors).toEqual([]);
 });
 
-test("文章目录、代码块与相邻文章", async ({ page, isMobile }) => {
+test("Article contents, code blocks, and adjacent posts", async ({
+  page,
+  isMobile,
+}) => {
   await page.goto("/posts/hello-kanade/");
   await expect(page.locator(".article-header h1")).toContainText(
-    "你好，Kanade",
+    { "zh-CN": "你好，Kanade", en: "Hello, Kanade", ja: "こんにちは、Kanade" }[
+      language
+    ],
   );
   await expect(page.locator("#article-body h2")).toHaveCount(4);
   await expect(page.locator(".copy-code")).toHaveCount(1);
@@ -307,7 +345,7 @@ test("文章目录、代码块与相邻文章", async ({ page, isMobile }) => {
   await expect(page).toHaveURL(/astro-islands/);
 });
 
-test("页面布局、资源和浏览器错误", async ({ page, isMobile }) => {
+test("Page layouts, assets, and browser errors", async ({ page, isMobile }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
@@ -344,20 +382,20 @@ test("页面布局、资源和浏览器错误", async ({ page, isMobile }) => {
     expect(broken).toEqual([]);
   }
   if (isMobile) {
-    await page.getByRole("button", { name: "打开菜单" }).click();
+    await page.getByRole("button", { name: t("nav.openMenu") }).click();
     await expect(
-      page.getByRole("navigation", { name: "主导航" }),
+      page.getByRole("navigation", { name: t("nav.main") }),
     ).toBeVisible();
     await page
-      .getByRole("navigation", { name: "主导航" })
-      .getByRole("link", { name: "友链" })
+      .getByRole("navigation", { name: t("nav.main") })
+      .getByRole("link", { name: t("nav.friends") })
       .click();
     await expect(page).toHaveURL(/friends/);
   }
   expect(errors).toEqual([]);
 });
 
-test("站点地图、RSS、404 与旧路径", async ({ page, request }) => {
+test("Sitemap, RSS, 404, and legacy redirects", async ({ page, request }) => {
   const feed = await request.get("/rss.xml");
   expect(feed.status()).toBe(200);
   expect((await feed.text()).match(/<item>/g)).toHaveLength(8);
@@ -365,14 +403,17 @@ test("站点地图、RSS、404 与旧路径", async ({ page, request }) => {
   expect(await (await request.get("/robots.txt")).text()).toContain("Sitemap:");
   const response = await page.goto("/a-page-that-does-not-exist/");
   expect(response?.status()).toBe(404);
-  await expect(page.getByText("这页故事，暂时还没写到")).toBeVisible();
+  await expect(page.getByText(t("error.heading"))).toBeVisible();
   await page.goto("/articles/");
   await expect(page).toHaveURL(/\/posts\//);
   await page.goto("/comments/");
   await expect(page).toHaveURL(/\/messages\//);
 });
 
-test("SEO 元数据与官方站点地图保持一致", async ({ page, request }) => {
+test("SEO metadata, official sitemap, and RSS consistency", async ({
+  page,
+  request,
+}) => {
   await page.goto("/posts/hello-kanade/?tracking=example#article-body");
   await expect(page.locator("h1")).toHaveCount(1);
   const canonical = await page
@@ -436,7 +477,7 @@ test("SEO 元数据与官方站点地图保持一致", async ({ page, request })
   );
 });
 
-test("封面跟随深色主题", async ({ page }) => {
+test("Covers follow the dark theme", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".post-feed")).toHaveAttribute(
     "data-ready",
@@ -444,11 +485,11 @@ test("封面跟随深色主题", async ({ page }) => {
   );
   const cover = page.locator(".post-cover").first();
   await expect(cover).toHaveCSS("filter", "none");
-  await page.getByRole("button", { name: "切换深色模式" }).click();
+  await page.getByRole("button", { name: t("nav.dark") }).click();
   await expect(cover).toHaveCSS("filter", "brightness(0.75) saturate(0.8)");
 });
 
-test("关闭 JavaScript 时仍可打开所有文章", async ({ browser, baseURL }) => {
+test("Reading all posts without JavaScript", async ({ browser, baseURL }) => {
   const context = await browser.newContext({
     javaScriptEnabled: false,
     baseURL,
@@ -457,7 +498,7 @@ test("关闭 JavaScript 时仍可打开所有文章", async ({ browser, baseURL 
     const page = await context.newPage();
     await page.goto("/");
     const fallback = page.getByRole("region", {
-      name: "所有文章",
+      name: t("post.all"),
       exact: true,
     });
     await expect(fallback.getByRole("link")).toHaveCount(8);
@@ -466,4 +507,95 @@ test("关闭 JavaScript 时仍可打开所有文章", async ({ browser, baseURL 
   } finally {
     await context.close();
   }
+});
+
+test("Configured language, localized search, metadata, and local fonts", async ({
+  page,
+  request,
+}) => {
+  const fonts: string[] = [];
+  const hydrationWarnings: string[] = [];
+  page.on("response", (response) => {
+    if (/\.woff2(?:\?|$)/.test(response.url()) && response.ok())
+      fonts.push(response.url());
+  });
+  page.on("console", (message) => {
+    if (/hydration.*mismatch/i.test(message.text()))
+      hydrationWarnings.push(message.text());
+  });
+  await page.goto("/");
+  await expect(page.locator(".post-feed")).toHaveAttribute(
+    "data-ready",
+    "true",
+  );
+  await expect(page.locator("html")).toHaveAttribute("lang", language);
+  await expect(page).toHaveTitle(
+    `${settings.site.name} · ${t("site.titleSuffix")}`,
+  );
+  await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute(
+    "content",
+    ogLocale,
+  );
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    "content",
+    t("site.description"),
+  );
+  await expect(page.locator(".hero-title")).toContainText(t("hero.title"));
+  if (language === "en")
+    expect(await page.locator("body").innerText()).not.toMatch(
+      /\p{Script=Han}/u,
+    );
+  if (language === "ja")
+    expect(await page.locator("body").innerText()).toMatch(
+      /[\p{Script=Hiragana}\p{Script=Katakana}]/u,
+    );
+
+  await page
+    .getByRole("button", { name: t("nav.search"), exact: true })
+    .click();
+  await page
+    .getByRole("searchbox", { name: t("search.keywords") })
+    .fill(t("category.frontend"));
+  await expect(page.getByRole("dialog").locator(".search-result")).toHaveCount(
+    4,
+  );
+  await page.keyboard.press("Escape");
+
+  await page.evaluate(() => document.fonts.ready);
+  const family =
+    language === "ja"
+      ? "Noto Sans JP Variable"
+      : language === "en"
+        ? "Noto Sans Variable"
+        : "ZaoZiGongFangYueYuan";
+  const loaded = await page.evaluate(() =>
+    [...document.fonts]
+      .filter((face) => face.status === "loaded")
+      .map((face) => face.family.replaceAll('"', "")),
+  );
+  expect(loaded).toContain(family);
+  expect(loaded).toContain("Oxanium-Medium");
+  expect(fonts.length).toBeGreaterThan(0);
+  expect(
+    fonts.every((url) => new URL(url).origin === new URL(page.url()).origin),
+  ).toBe(true);
+  await page.goto("/posts/hello-kanade/");
+  await expect(page.locator("#article-body h2").first()).toHaveCSS(
+    "font-family",
+    new RegExp(family),
+  );
+
+  const rss = await (await request.get("/rss.xml")).text();
+  const feedInfo = await page.evaluate((source) => {
+    const xml = new DOMParser().parseFromString(source, "application/xml");
+    return {
+      language: xml.querySelector("channel > language")?.textContent,
+      title: xml.querySelector("item > title")?.textContent,
+    };
+  }, rss);
+  expect(feedInfo.language).toBe(language);
+  expect(feedInfo.title).toBe(
+    await page.locator(".article-header h1").textContent(),
+  );
+  expect(hydrationWarnings).toEqual([]);
 });

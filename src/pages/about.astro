@@ -1,71 +1,66 @@
 ---
+import { t } from "../i18n";
 import BlogLayout from "../layouts/BlogLayout.astro";
 import { personalInfo } from "../config";
 ---
 
 <BlogLayout
-  title="关于"
-  heroTitle="你好，我是苏多莉亚"
-  heroSubtitle="一个喜欢代码，也喜欢认真生活的普通人。"
+  title={t("nav.about")}
+  heroTitle={t("about.heroTitle")}
+  heroSubtitle={t("about.heroSubtitle")}
 >
   <section class="card page-card about-card">
     <div class="about-intro">
-      <img src={personalInfo.avatar} width="90" height="90" alt="苏多莉亚" />
+      <img
+        src={personalInfo.avatar}
+        width="90"
+        height="90"
+        alt={personalInfo.name}
+      />
       <div>
-        <span class="eyebrow">HELLO, I'M SUDORIA</span>
+        <span class="eyebrow">{t("about.eyebrow")}</span>
         <h2>
-          很高兴，和你相遇 <span class="accent">✿</span>
+          {t("about.greeting")}
+          <span class="accent">✿</span>
         </h2>
-        <p>全栈工程师 / 终身学习者 / 日常记录员</p>
+        <p>{t("about.roles")}</p>
       </div>
     </div>
     <div class="prose">
-      <h2>关于我</h2>
-      <p>
-        你好，我是苏多莉亚。喜欢把想法变成可以使用的东西，也喜欢在折腾的过程中，慢慢弄懂「为什么」。
-      </p>
-      <p>
-        这里是我的个人博客，分享前端开发、工具实践和一些生活记录。不追求每篇文章都面面俱到，只希望真实地留下思考与成长的过程。
-      </p>
+      <h2>{t("about.me")}</h2>
+      <p>{t("about.intro")}</p>
+      <p>{t("about.blog")}</p>
       <blockquote>
-        <p>保持好奇，认真生活。做一点自己喜欢的事，也把喜欢分享给别人。</p>
+        <p>{t("about.quote")}</p>
       </blockquote>
-      <h2>正在折腾什么</h2>
+      <h2>{t("about.interests")}</h2>
     </div>
     <div class="interest-grid">
       <div>
         <span class="icon-[lucide--code-xml]" aria-hidden="true"></span>
-        <strong>写一点代码</strong>
+        <strong>{t("about.code")}</strong>
         <p>
           Astro、Vue、TypeScript
           <br />
-          把灵感变成小小的作品
+          {t("about.codeDescription")}
         </p>
       </div>
       <div>
         <span class="icon-[lucide--coffee]" aria-hidden="true"></span>
-        <strong>过一点生活</strong>
+        <strong>{t("about.life")}</strong>
         <p>
-          音乐、散步、碎碎念
+          {t("about.lifeActivities")}
           <br />
-          收藏平凡日子里的亮光
+          {t("about.lifeDescription")}
         </p>
       </div>
     </div>
     <div class="prose">
-      <h2>关于 Kanade</h2>
-      <p>
-        Kanade，一个记录热爱的小站。名字来自「奏」的读音，希望文字与代码也能像音符一样，组成属于自己的旋律。
-      </p>
-      <p>
-        小站使用 Astro、Vue 与 Tailwind CSS
-        构建。粉色、圆角、轻轻流动的波浪，是想留给每位访客的一点温柔。
-      </p>
-      <h2>关于这里的内容</h2>
-      <p>
-        当前文章用于展示小站的阅读与分类体验，生活随笔已标注为示例。后续会逐步替换成真实的学习笔记与日常记录。文章中若有疏漏，欢迎通过
-        GitHub 交流。
-      </p>
+      <h2>{t("about.site")}</h2>
+      <p>{t("about.siteIntro")}</p>
+      <p>{t("about.siteTech")}</p>
+      <h2>{t("about.content")}</h2>
+      <p>{t("about.contentDescription")}</p>
     </div>
     <div class="about-links">
       <a
@@ -77,12 +72,13 @@ import { personalInfo } from "../config";
         <span class="icon-[jam--github]" aria-hidden="true"></span>GitHub
       </a>
       <a class="btn secondary" href="/posts/">
-        读读我的文章
+        {t("about.read")}
         <span class="icon-[lucide--arrow-right]" aria-hidden="true"></span>
       </a>
     </div>
     <div class="about-end">
-      谢谢你，在互联网的某个角落找到了这里。<span>✿</span>
+      {t("about.thanks")}
+      <span>✿</span>
     </div>
   </section>
 </BlogLayout>

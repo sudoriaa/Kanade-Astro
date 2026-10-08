@@ -11,7 +11,7 @@
   --color-subTextLight: #ee8ca2;
   --color-subBoxDark: #343044;
   --color-subTextDark: #eeb0c2;
-  --font-Oxanium-Medium: "Oxanium-Medium", "ZaoZiGongFangYueYuan", sans-serif;
+  --font-Oxanium-Medium: "Oxanium-Medium", var(--font-body);
 }
 @font-face {
   font-family: "ZaoZiGongFangYueYuan";
@@ -28,6 +28,12 @@
   font-display: swap;
 }
 :root {
+  --font-body:
+    "ZaoZiGongFangYueYuan", "Noto Sans SC Variable", "Noto Sans Variable",
+    "Noto Sans JP Variable", sans-serif;
+  --font-code:
+    "JetBrains Mono Variable", "Noto Sans SC Variable", "Noto Sans JP Variable",
+    monospace;
   --bg: #fff1f1;
   --card: #fff;
   --text: #4c4551;
@@ -37,6 +43,19 @@
   --line: #f3e9ed;
   --shadow: 0 5px 24px #88566a06;
   color-scheme: light;
+}
+:root:lang(en) {
+  --font-body:
+    "Noto Sans Variable", "Noto Sans JP Variable", "Noto Sans SC Variable",
+    sans-serif;
+}
+:root:lang(ja) {
+  --font-code:
+    "JetBrains Mono Variable", "Noto Sans JP Variable", "Noto Sans SC Variable",
+    monospace;
+  --font-body:
+    "Noto Sans JP Variable", "Noto Sans Variable", "Noto Sans SC Variable",
+    sans-serif;
 }
 :root.dark {
   --bg: #111520;
@@ -58,7 +77,7 @@ html {
 }
 body {
   margin: 0;
-  font-family: "ZaoZiGongFangYueYuan", system-ui, sans-serif;
+  font-family: var(--font-body);
   color: var(--text);
   background: var(--bg);
   font-size: 15px;
@@ -176,7 +195,7 @@ button:disabled {
   color: var(--accent);
 }
 .eyebrow {
-  font-family: "Oxanium-Medium", sans-serif;
+  font-family: "Oxanium-Medium", var(--font-body);
   text-transform: uppercase;
   letter-spacing: 0.16em;
   font-size: 11px;
@@ -289,7 +308,7 @@ a.chip:hover {
   gap: 8px;
   margin-bottom: 8px;
   color: var(--text);
-  font-family: "Oxanium-Medium", sans-serif;
+  font-family: "Oxanium-Medium", var(--font-body);
   font-size: 19px;
 }
 .back-top {
@@ -328,12 +347,12 @@ a.chip:hover {
 .prose {
   color: var(--text);
   line-height: 2;
-  font-family: system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
 }
 .prose h2,
 .prose h3 {
-  font-family: "ZaoZiGongFangYueYuan", sans-serif;
+  font-family: var(--font-body);
   font-weight: 600;
   line-height: 1.5;
   margin: 2em 0 0.8em;
@@ -392,8 +411,8 @@ a.chip:hover {
   line-height: 1.9;
   overflow-x: auto;
 }
-.prose pre code {
-  font-family: Consolas, monospace;
+.prose code {
+  font-family: var(--font-code);
 }
 .prose .copy-code {
   position: absolute;

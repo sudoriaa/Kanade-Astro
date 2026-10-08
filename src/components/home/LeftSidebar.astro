@@ -1,6 +1,8 @@
 ---
+import { t } from "../../i18n";
 import PersonalCard from "./PersonalCard.vue";
 import { categories, getTags, type PostSummary } from "../../lib/posts";
+import { categoryLabel } from "../../data/post-options";
 interface Props {
   posts: PostSummary[];
 }
@@ -8,12 +10,12 @@ const { posts } = Astro.props;
 const tags = getTags(posts);
 ---
 
-<aside class="left-sidebar" aria-label="个人信息与分类">
+<aside class="left-sidebar" aria-label={t("sidebar.profile")}>
   <PersonalCard posts={posts} />
   <section class="card panel category-panel">
     <h2 class="panel-title">
       <span class="icon-[lucide--folder-open]" aria-hidden="true"></span>
-      文章分类
+      {t("sidebar.categories")}
     </h2>
     {categories.map((category, index) => (
       <a href={`/posts/?category=${encodeURIComponent(category)}`}>
@@ -28,7 +30,7 @@ const tags = getTags(posts);
             }
             aria-hidden="true"
           ></span>
-          {category}
+          {categoryLabel(category)}
         </span>
         <span class="category-count">
           {posts
@@ -41,7 +43,8 @@ const tags = getTags(posts);
   </section>
   <section class="card panel" id="tags">
     <h2 class="panel-title">
-      <span class="icon-[lucide--tags]" aria-hidden="true"></span>标签拾光
+      <span class="icon-[lucide--tags]" aria-hidden="true"></span>
+      {t("sidebar.tags")}
     </h2>
     <div class="tag-cloud">
       {tags.map((tag) => (
@@ -54,8 +57,8 @@ const tags = getTags(posts);
   <a class="rss-card card" href="/rss.xml">
     <span class="icon-[lucide--rss]" aria-hidden="true"></span>
     <div>
-      <strong>订阅一点日常</strong>
-      <p>通过 RSS，让更新与你相遇</p>
+      <strong>{t("sidebar.rssTitle")}</strong>
+      <p>{t("sidebar.rssDescription")}</p>
     </div>
     <span class="icon-[lucide--arrow-up-right]" aria-hidden="true"></span>
   </a>
@@ -84,7 +87,7 @@ const tags = getTags(posts);
   .category-count {
     font:
       10px "Oxanium-Medium",
-      sans-serif;
+      var(--font-body);
     color: var(--muted);
     background: var(--bg);
     padding: 2px 7px;

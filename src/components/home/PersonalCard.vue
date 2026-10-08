@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { t } from "../../i18n";
 import { personalInfo } from "../../config";
 import { getTags, type PostSummary } from "../../lib/posts";
 const props = defineProps<{ posts: PostSummary[] }>();
@@ -7,7 +8,7 @@ const props = defineProps<{ posts: PostSummary[] }>();
   <section class="card profile-card">
     <div class="profile-top">
       <span class="profile-flower">✿</span
-      ><span class="eyebrow">NICE TO MEET YOU</span
+      ><span class="eyebrow">{{ t("author.eyebrow") }}</span
       ><span class="profile-spark">✧</span>
     </div>
     <a href="/about/" class="avatar-link"
@@ -15,7 +16,10 @@ const props = defineProps<{ posts: PostSummary[] }>();
         :src="personalInfo.avatar"
         :alt="personalInfo.name"
         width="80"
-        height="80" /><span class="online-dot" title="持续记录中"></span
+        height="80" /><span
+        class="online-dot"
+        :title="t('author.online')"
+      ></span
     ></a>
     <h2>{{ personalInfo.name }}</h2>
     <p class="profile-role">{{ personalInfo.role }}</p>
@@ -23,13 +27,13 @@ const props = defineProps<{ posts: PostSummary[] }>();
     <div class="profile-stats">
       <a href="/posts/"
         ><strong>{{ posts.length }}</strong
-        ><span>文章</span></a
+        ><span>{{ t("nav.posts") }}</span></a
       ><a href="/posts/"
         ><strong>{{ new Set(posts.map((p) => p.category)).size }}</strong
-        ><span>分类</span></a
+        ><span>{{ t("common.categories") }}</span></a
       ><a href="/posts/#tags"
         ><strong>{{ getTags(props.posts).length }}</strong
-        ><span>标签</span></a
+        ><span>{{ t("common.tags") }}</span></a
       >
     </div>
     <div class="profile-social">
@@ -44,7 +48,7 @@ const props = defineProps<{ posts: PostSummary[] }>();
         ><span :class="link.icon"></span
       ></a>
     </div>
-    <div class="profile-status"><span></span>保持热爱，奔赴下一场山海</div>
+    <div class="profile-status"><span></span>{{ t("author.status") }}</div>
   </section>
 </template>
 <style scoped>
@@ -137,7 +141,7 @@ h2 {
 .profile-stats strong {
   font:
     19px "Oxanium-Medium",
-    sans-serif;
+    var(--font-body);
 }
 .profile-stats span {
   color: var(--muted);

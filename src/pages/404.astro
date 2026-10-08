@@ -1,23 +1,24 @@
 ---
+import { t } from "../i18n";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  title="页面走丢了"
-  heroTitle="偶尔迷路，也没关系"
-  heroSubtitle="换个方向，也许会遇见新的风景。"
+  title={t("error.title")}
+  heroTitle={t("error.heroTitle")}
+  heroSubtitle={t("error.heroSubtitle")}
   noindex
 >
   <div class="shell missing-page">
     <div class="card page-card">
       <span class="missing-number">404</span>
-      <h2>这页故事，暂时还没写到</h2>
-      <p>页面可能搬家了，或者链接里有一个小小的笔误。</p>
+      <h2>{t("error.heading")}</h2>
+      <p>{t("error.description")}</p>
       <a href="/" class="btn">
-        回到首页
+        {t("error.home")}
       </a>
       <a href="/posts/" class="btn secondary">
-        随便读读
+        {t("error.posts")}
       </a>
     </div>
   </div>
@@ -30,7 +31,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     text-align: center;
   }
   .missing-number {
-    font: 85px "Oxanium-Medium";
+    font:
+      85px "Oxanium-Medium",
+      var(--font-body);
     color: var(--accent);
   }
   .missing-page h2 {

@@ -2,7 +2,7 @@
 
 <template>
   <div class="w-full overflow-hidden leading-none">
-    <!-- 波浪 SVG -->
+    <!-- Wave SVG -->
     <svg
       class="relative w-full h-[15vh] min-h-[100px] max-h-[150px] -mb-[7px]"
       xmlns="http://www.w3.org/2000/svg"

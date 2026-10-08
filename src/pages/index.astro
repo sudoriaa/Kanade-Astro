@@ -1,4 +1,5 @@
 ---
+import { t } from "../i18n";
 import BlogLayout from "../layouts/BlogLayout.astro";
 import PostFeed from "../components/posts/PostFeed.vue";
 import PostListFallback from "../components/posts/PostListFallback.astro";
@@ -9,8 +10,8 @@ const posts = (await getPosts()).map(summarize);
 <BlogLayout home>
   <div class="hello-strip">
     <span class="icon-[lucide--sparkles]" aria-hidden="true"></span>
-    <p>你好呀，远道而来的朋友，今天也要开心哦！</p>
-    <span class="hello-pill">HAVE A NICE DAY</span>
+    <p>{t("home.greeting")}</p>
+    <span class="hello-pill">{t("home.greetingBadge")}</span>
   </div>
   <PostFeed posts={posts} client:load />
   <PostListFallback posts={posts} />
@@ -39,7 +40,7 @@ const posts = (await getPosts()).map(summarize);
   .hello-pill {
     font:
       7px "Oxanium-Medium",
-      sans-serif;
+      var(--font-body);
     letter-spacing: 0.05em;
     opacity: 0.65;
   }

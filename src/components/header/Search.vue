@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { t, formatDate } from "../../i18n";
+import { categoryLabel } from "../../data/post-options";
 import { ref, computed, onMounted, onUnmounted, nextTick } from "vue";
 import type { PostSummary } from "../../lib/posts";
 const props = defineProps<{ posts: PostSummary[] }>();
@@ -14,7 +16,7 @@ const results = computed(() => {
   if (!terms.length) return props.posts.slice(0, 4);
   return props.posts.filter((p) =>
     terms.every((term) =>
-      [p.title, p.description, p.category, ...p.tags]
+      [p.title, p.description, p.category, categoryLabel(p.category), ...p.tags]
         .join(" ")
         .toLocaleLowerCase()
         .includes(term),
@@ -73,8 +75,8 @@ onUnmounted(() => {
   >
     <div class="search-body">
       <div class="search-heading">
-        <h2 id="search-title">在文字里，找一点灵感</h2>
-        <button aria-label="关闭搜索" @click="close">
+        <h2 id="search-title">{{ t("search.title") }}</h2>
+        <button :aria-label="t('search.close')" @click="close">
           <span class="icon-[lucide--x]"></span>
         </button>
       </div>
@@ -84,12 +86,16 @@ onUnmounted(() => {
           ref="input"
           v-model="query"
           type="search"
-          placeholder="搜索文章、分类或标签…"
-          aria-label="搜索关键词"
+          :placeholder="t('search.placeholder')"
+          :aria-label="t('search.keywords')"
         /><kbd>ESC</kbd>
       </div>
       <p class="search-meta" aria-live="polite">
-        {{ query.trim() ? `找到 ${results.length} 篇文章` : "最近的文字" }}
+        {{
+          query.trim()
+            ? t("search.results", { count: results.length })
+            : t("search.recent")
+        }}
       </p>
       <div class="search-results">
         <a
@@ -100,18 +106,20 @@ onUnmounted(() => {
           ><span class="result-icon icon-[lucide--file-text]"></span>
           <div>
             <strong>{{ post.title }}</strong>
-            <p>{{ post.category }} · {{ post.date }}</p>
+            <p>
+              {{ categoryLabel(post.category) }} · {{ formatDate(post.date) }}
+            </p>
           </div>
           <span class="icon-[lucide--arrow-up-right]"></span
         ></a>
         <div v-if="!results.length" class="empty-state">
           <span class="icon-[lucide--search-x]"></span>
-          <h3>还没有找到这段文字</h3>
-          <p>试试「Astro」「CSS」或「生活」。</p>
+          <h3>{{ t("search.emptyTitle") }}</h3>
+          <p>{{ t("search.emptyHint") }}</p>
         </div>
       </div>
       <div class="search-footer">
-        用文字连接每一个灵感 <span>Ctrl / ⌘ K 打开 · ESC 关闭</span>
+        {{ t("search.footer") }}<span>{{ t("search.shortcuts") }}</span>
       </div>
     </div>
   </dialog>
@@ -182,7 +190,7 @@ onUnmounted(() => {
 }
 kbd {
   color: var(--muted);
-  font: 10px system-ui;
+  font: 10px var(--font-body);
   padding: 2px 4px;
   border: 1px solid var(--line);
   border-radius: 4px;

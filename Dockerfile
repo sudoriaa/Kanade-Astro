@@ -9,6 +9,8 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 ARG SITE_URL=https://ricecandy.cn
 ENV SITE_URL=${SITE_URL}
+ARG PUBLIC_SITE_LANGUAGE
+ENV PUBLIC_SITE_LANGUAGE=${PUBLIC_SITE_LANGUAGE}
 RUN pnpm build
 
 FROM nginx:stable-alpine AS runtime

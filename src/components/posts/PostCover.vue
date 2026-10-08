@@ -1,45 +1,46 @@
 <script setup lang="ts">
+import { t } from "../../i18n";
 defineProps<{ kind: string; featured?: boolean }>();
 const labels: Record<string, { icon: string; title: string; sub: string }> = {
   astro: {
     icon: "icon-[simple-icons--astro]",
     title: "Astro",
-    sub: "BUILD SOMETHING YOU LOVE",
+    sub: t("cover.astroSubtitle"),
   },
   vue: {
     icon: "icon-[simple-icons--vuedotjs]",
     title: "Vue.js",
-    sub: "LESS CODE, MORE POSSIBILITIES",
+    sub: t("cover.vueSubtitle"),
   },
   css: {
     icon: "icon-[lucide--palette]",
-    title: "Little details.",
-    sub: "MAKE THE WEB A LITTLE SOFTER",
+    title: t("cover.cssTitle"),
+    sub: t("cover.cssSubtitle"),
   },
   notes: {
     icon: "icon-[lucide--coffee]",
-    title: "Slow moments",
-    sub: "A LITTLE SPACE FOR YOURSELF",
+    title: t("cover.notesTitle"),
+    sub: t("cover.notesSubtitle"),
   },
   life: {
     icon: "icon-[lucide--sprout]",
-    title: "Dear, life.",
-    sub: "COLLECT THE LITTLE THINGS",
+    title: t("cover.lifeTitle"),
+    sub: t("cover.lifeSubtitle"),
   },
   typescript: {
     icon: "icon-[simple-icons--typescript]",
     title: "TypeScript",
-    sub: "MAKE THE BOUNDARIES CLEAR",
+    sub: t("cover.typescriptSubtitle"),
   },
   git: {
     icon: "icon-[simple-icons--git]",
-    title: "One step.",
-    sub: "SMALL COMMITS, BETTER STORIES",
+    title: t("cover.gitTitle"),
+    sub: t("cover.gitSubtitle"),
   },
   design: {
     icon: "icon-[lucide--sparkles]",
-    title: "Just create.",
-    sub: "TURN AN IDEA INTO SOMETHING",
+    title: t("cover.designTitle"),
+    sub: t("cover.designSubtitle"),
   },
 };
 </script>
@@ -47,11 +48,13 @@ const labels: Record<string, { icon: string; title: string; sub: string }> = {
   <div class="post-cover" :class="[kind, { featured }]" aria-hidden="true">
     <div class="cover-grid"></div>
     <span class="cover-orbit"></span><span class="cover-dot"></span>
-    <span class="cover-corner">K / JOURNAL</span>
+    <span class="cover-corner">{{ t("cover.journal") }}</span>
     <span class="cover-icon" :class="labels[kind]?.icon"></span>
-    <strong>{{ featured ? "Hello, Kanade." : labels[kind]?.title }}</strong>
+    <strong>{{
+      featured ? t("cover.featuredTitle") : labels[kind]?.title
+    }}</strong>
     <small>{{
-      featured ? "A NEW STORY BEGINS HERE" : labels[kind]?.sub
+      featured ? t("cover.featuredSubtitle") : labels[kind]?.sub
     }}</small>
     <span class="cover-star">✧</span>
   </div>
@@ -109,7 +112,7 @@ const labels: Record<string, { icon: string; title: string; sub: string }> = {
   left: 15px;
   font:
     7px "Oxanium-Medium",
-    sans-serif;
+    var(--font-body);
   letter-spacing: 0.14em;
   opacity: 0.6;
 }
@@ -122,14 +125,14 @@ const labels: Record<string, { icon: string; title: string; sub: string }> = {
 strong {
   font:
     600 25px "Oxanium-Medium",
-    sans-serif;
+    var(--font-body);
   letter-spacing: -0.6px;
   white-space: nowrap;
 }
 small {
   font:
     6px "Oxanium-Medium",
-    sans-serif;
+    var(--font-body);
   letter-spacing: 0.12em;
   margin-top: 9px;
   opacity: 0.75;

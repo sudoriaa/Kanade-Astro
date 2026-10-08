@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import { t, formatDate } from "../../i18n";
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import type { PostSummary } from "../../lib/posts";
 import PostCover from "./PostCover.vue";
-import { categoryNames as configuredCategories } from "../../data/post-options";
+import {
+  categoryNames as configuredCategories,
+  categoryLabel,
+  normalizeCategory,
+} from "../../data/post-options";
 const props = defineProps<{ posts: PostSummary[]; archive?: boolean }>();
 const category = ref("");
 const tag = ref("");
@@ -20,7 +25,7 @@ const filtered = computed(() =>
       (!tag.value || p.tags.includes(tag.value)) &&
       (!month.value || p.date.startsWith(month.value)) &&
       (!query.value.trim() ||
-        [p.title, p.description, ...p.tags]
+        [p.title, p.description, categoryLabel(p.category), ...p.tags]
           .join(" ")
           .toLowerCase()
           .includes(query.value.trim().toLowerCase())),
@@ -47,7 +52,7 @@ function syncUrl() {
 }
 function readUrl() {
   const params = new URLSearchParams(window.location.search);
-  category.value = params.get("category") || "";
+  category.value = normalizeCategory(params.get("category") || "");
   tag.value = params.get("tag") || "";
   month.value = params.get("month") || "";
   query.value = params.get("q") || "";
@@ -96,34 +101,35 @@ onUnmounted(() => window.removeEventListener("popstate", readUrl));
 <template>
   <section ref="feed" class="post-feed" :data-ready="ready">
     <div v-if="archive" class="card archive-intro">
-      <span class="eyebrow">THE ARCHIVE</span>
-      <h2>文字里的时光</h2>
-      <p>共 {{ posts.length }} 篇记录，每一篇都是成长的脚印。</p>
+      <span class="eyebrow">{{ t("post.archiveEyebrow") }}</span>
+      <h2>{{ t("post.archiveTitle") }}</h2>
+      <p>{{ t("post.archiveIntro", { count: posts.length }) }}</p>
       <label class="archive-search"
         ><span class="icon-[lucide--search]"></span
         ><input
           v-model="query"
           @input="search"
           type="search"
-          aria-label="筛选文章"
-          placeholder="在文章里找一找…"
+          :aria-label="t('post.filter')"
+          :placeholder="t('post.filterPlaceholder')"
       /></label>
     </div>
     <div v-else class="feed-title">
       <h2>
-        <span class="icon-[lucide--notebook-pen]"></span>最新文章<small
-          >LATEST POSTS</small
-        >
+        <span class="icon-[lucide--notebook-pen]"></span>{{ t("post.latest")
+        }}<small>{{ t("post.latestEyebrow") }}</small>
       </h2>
-      <span class="feed-count">{{ posts.length }} 篇记录</span>
+      <span class="feed-count">{{
+        t("post.records", { count: posts.length })
+      }}</span>
     </div>
-    <div class="feed-tabs card" aria-label="文章分类">
+    <div class="feed-tabs card" :aria-label="t('sidebar.categories')">
       <button
         :class="{ selected: !category && !tag && !month }"
         :aria-pressed="!category && !tag && !month"
         @click="reset"
       >
-        全部文章 <span>{{ posts.length }}</span>
+        {{ t("post.all") }}<span>{{ posts.length }}</span>
       </button>
       <button
         v-for="name in categoryNames"
@@ -132,15 +138,17 @@ onUnmounted(() => window.removeEventListener("popstate", readUrl));
         :aria-pressed="category === name"
         @click="setCategory(name)"
       >
-        {{ name }}
+        {{ categoryLabel(name) }}
       </button>
     </div>
     <div
       v-if="tag || month || (category && !categoryNames.includes(category))"
       class="filter-summary"
     >
-      <span>正在浏览：{{ tag || month || category }}</span
-      ><button @click="reset">清除筛选 ×</button>
+      <span>{{
+        t("post.browsing", { filter: tag || month || categoryLabel(category) })
+      }}</span
+      ><button @click="reset">{{ t("post.clear") }}</button>
     </div>
     <div class="post-list" aria-live="polite">
       <article
@@ -152,21 +160,20 @@ onUnmounted(() => window.removeEventListener("popstate", readUrl));
         <a
           :href="`/posts/${post.id}/`"
           class="cover-link"
-          :aria-label="`阅读：${post.title}`"
+          :aria-label="t('post.read', { title: post.title })"
           tabindex="-1"
           ><PostCover :kind="post.cover" :featured="post.featured"
         /></a>
         <div class="post-info">
           <div class="post-kicker">
             <span v-if="post.featured" class="pin"
-              ><span class="icon-[lucide--pin]"></span>置顶</span
+              ><span class="icon-[lucide--pin]"></span
+              >{{ t("post.featured") }}</span
             ><a
               :href="`/posts/?category=${encodeURIComponent(post.category)}`"
-              >{{ post.category }}</a
+              >{{ categoryLabel(post.category) }}</a
             ><span class="meta-divider">/</span
-            ><time :datetime="post.date">{{
-              post.date.replaceAll("-", ".")
-            }}</time>
+            ><time :datetime="post.date">{{ formatDate(post.date) }}</time>
           </div>
           <h3>
             <a :href="`/posts/${post.id}/`">{{ post.title }}</a>
@@ -184,26 +191,31 @@ onUnmounted(() => window.removeEventListener("popstate", readUrl));
             <a
               class="read-post"
               :href="`/posts/${post.id}/`"
-              :aria-label="`阅读全文：${post.title}`"
-              >{{ post.minutes }} 分钟<span
-                class="icon-[lucide--arrow-up-right]"
-              ></span
+              :aria-label="t('post.readFull', { title: post.title })"
+              >{{ t("post.minutes", { count: post.minutes })
+              }}<span class="icon-[lucide--arrow-up-right]"></span
             ></a>
           </div>
         </div>
       </article>
       <div v-if="!displayed.length" class="empty-state card">
         <span class="icon-[lucide--notebook]"></span>
-        <h3>这一页，还等着新的故事</h3>
-        <p>没有匹配的文章，换个关键词试试吧。</p>
-        <button class="btn secondary" @click="reset">查看全部文章</button>
+        <h3>{{ t("post.emptyTitle") }}</h3>
+        <p>{{ t("post.emptyDescription") }}</p>
+        <button class="btn secondary" @click="reset">
+          {{ t("post.viewAll") }}
+        </button>
       </div>
     </div>
-    <nav v-if="totalPages > 1" class="pagination" aria-label="文章分页">
+    <nav
+      v-if="totalPages > 1"
+      class="pagination"
+      :aria-label="t('post.pagination')"
+    >
       <button
         @click="turnPage(page - 1)"
         :disabled="page === 1"
-        aria-label="上一页"
+        :aria-label="t('post.previousPage')"
       >
         <span class="icon-[lucide--chevron-left]"></span>
       </button>
@@ -213,22 +225,20 @@ onUnmounted(() => window.removeEventListener("popstate", readUrl));
         @click="turnPage(index)"
         :class="{ current: page === index }"
         :aria-current="page === index ? 'page' : undefined"
-        :aria-label="`第 ${index} 页`"
+        :aria-label="t('post.page', { count: index })"
       >
         {{ index }}
       </button>
       <button
         @click="turnPage(page + 1)"
         :disabled="page === totalPages"
-        aria-label="下一页"
+        :aria-label="t('post.nextPage')"
       >
         <span class="icon-[lucide--chevron-right]"></span>
       </button>
-      <span>共 {{ filtered.length }} 篇</span>
+      <span>{{ t("post.total", { count: filtered.length }) }}</span>
     </nav>
-    <div class="feed-end">
-      <span></span>把每一份热爱，都好好收藏。<span></span>
-    </div>
+    <div class="feed-end"><span></span>{{ t("post.end") }}<span></span></div>
   </section>
 </template>
 <style scoped>
@@ -256,7 +266,7 @@ onUnmounted(() => window.removeEventListener("popstate", readUrl));
 .feed-title small {
   font:
     9px "Oxanium-Medium",
-    sans-serif;
+    var(--font-body);
   letter-spacing: 0.12em;
   margin-left: 5px;
   color: var(--muted);
@@ -293,7 +303,9 @@ onUnmounted(() => window.removeEventListener("popstate", readUrl));
 .feed-tabs button > span {
   display: inline-block;
   margin-left: 5px;
-  font: 10px "Oxanium-Medium";
+  font:
+    10px "Oxanium-Medium",
+    var(--font-body);
   padding: 0 4px;
   border-radius: 3px;
   background: #ffffff25;
@@ -422,7 +434,7 @@ onUnmounted(() => window.removeEventListener("popstate", readUrl));
   place-items: center;
   background: var(--card);
   color: var(--muted);
-  font-family: "Oxanium-Medium", sans-serif;
+  font-family: "Oxanium-Medium", var(--font-body);
   font-size: 12px;
 }
 .pagination button.current {

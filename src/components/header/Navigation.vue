@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { t } from "../../i18n";
 import { ref, onMounted, onUnmounted } from "vue";
 import { headerConfig } from "../../config";
 import { initTheme, toggleTheme } from "../../scripts/theme";
@@ -39,12 +40,15 @@ onUnmounted(() => {
     :class="{ scrolled: !isAtTop, 'menu-open': menuOpen }"
   >
     <div class="nav-inner shell">
-      <a href="/" class="brand" :aria-label="`${headerConfig.title} 首页`"
+      <a
+        href="/"
+        class="brand"
+        :aria-label="t('nav.brandHome', { site: headerConfig.title })"
         ><span class="brand-flower">✿</span>{{ headerConfig.title
         }}<span class="brand-dot">.</span></a
       >
       <nav
-        aria-label="主导航"
+        :aria-label="t('nav.main')"
         :class="{ expanded: menuOpen }"
         id="main-navigation"
       >
@@ -62,15 +66,15 @@ onUnmounted(() => {
       <div class="nav-actions">
         <button
           @click="openSearch"
-          aria-label="搜索文章"
-          title="搜索文章（Ctrl / ⌘ K）"
+          :aria-label="t('nav.search')"
+          :title="t('nav.searchHint')"
         >
           <span class="icon-[lucide--search]"></span>
         </button>
         <button
           @click="toggle"
-          :aria-label="isDark ? '切换浅色模式' : '切换深色模式'"
-          title="切换主题"
+          :aria-label="isDark ? t('nav.light') : t('nav.dark')"
+          :title="t('nav.theme')"
         >
           <span
             :class="isDark ? 'icon-[lucide--moon]' : 'icon-[lucide--sun]'"
@@ -81,7 +85,7 @@ onUnmounted(() => {
           @click="menuOpen = !menuOpen"
           :aria-expanded="menuOpen"
           aria-controls="main-navigation"
-          :aria-label="menuOpen ? '关闭菜单' : '打开菜单'"
+          :aria-label="menuOpen ? t('nav.closeMenu') : t('nav.openMenu')"
         >
           <span
             :class="menuOpen ? 'icon-[lucide--x]' : 'icon-[lucide--menu]'"
@@ -117,13 +121,13 @@ onUnmounted(() => {
   gap: 8px;
   font:
     600 27px "Oxanium-Medium",
-    sans-serif;
+    var(--font-body);
   letter-spacing: -0.8px;
   white-space: nowrap;
 }
 .brand-flower {
   font-size: 29px;
-  font-family: sans-serif;
+  font-family: var(--font-body);
   font-weight: 400;
 }
 .brand-dot {

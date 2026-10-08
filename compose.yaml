@@ -4,6 +4,7 @@ services:
       context: .
       args:
         SITE_URL: ${SITE_URL:-https://ricecandy.cn}
+        PUBLIC_SITE_LANGUAGE: ${PUBLIC_SITE_LANGUAGE:-}
     image: sudoria-kanade:latest
     container_name: sudoria-kanade
     restart: unless-stopped

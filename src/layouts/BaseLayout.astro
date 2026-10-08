@@ -1,6 +1,11 @@
 ---
+import { t } from "../i18n";
 import { siteInfo, personalInfo, welcomeConfig } from "../config";
 import "../styles/global.css";
+import "@fontsource-variable/noto-sans";
+import "@fontsource-variable/noto-sans-jp";
+import "@fontsource-variable/noto-sans-sc";
+import "@fontsource-variable/jetbrains-mono";
 import Navigation from "../components/header/Navigation.vue";
 import Welcome from "../components/header/Welcome.astro";
 import Search from "../components/header/Search.vue";
@@ -73,13 +78,6 @@ const canonical = new URL(Astro.url.pathname, siteInfo.url);
       href="/rss.xml"
     />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <link
-      rel="preload"
-      href="/fonts/ZaoZiGongFangYueYuan.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
     <title>{pageTitle}</title>
     <script is:inline>
       (() => {
@@ -98,7 +96,7 @@ const canonical = new URL(Astro.url.pathname, siteInfo.url);
   </head>
   <body>
     <a class="skip-link" href="#main-content">
-      跳到正文
+      {t("common.skip")}
     </a>
     <Navigation pathname={Astro.url.pathname} client:load />
     <Search posts={posts} client:load />
@@ -117,17 +115,24 @@ const canonical = new URL(Astro.url.pathname, siteInfo.url);
       <a href="/" class="footer-mark">
         <span class="accent">✿</span> {siteInfo.title}.
       </a>
-      <p>在这里，记录每一次心动与成长。</p>
+      <p>{t("footer.message")}</p>
       <p>
-        © {new Date().getFullYear()} {personalInfo.englishName} · Built with{" "}
+        © {new Date().getFullYear()} {personalInfo.englishName} ·{" "}
+        {t("footer.builtWith")}{" "}
         <a href="https://astro.build" target="_blank" rel="noopener noreferrer">
           Astro
         </a>{" "}
-        &amp; <span class="accent">♥</span> · <a href="/rss.xml">RSS 订阅</a> ·{" "}
-        <a href="/about/">关于本站</a>
+        &amp; <span class="accent">♥</span> ·{" "}
+        <a href="/rss.xml">{t("common.rss")}</a> ·{" "}
+        <a href="/about/">{t("common.aboutSite")}</a>
       </p>
     </footer>
-    <button class="back-top" id="back-top" aria-label="回到顶部" hidden>
+    <button
+      class="back-top"
+      id="back-top"
+      aria-label={t("common.backTop")}
+      hidden
+    >
       <span class="icon-[lucide--arrow-up]"></span>
     </button>
     <script>

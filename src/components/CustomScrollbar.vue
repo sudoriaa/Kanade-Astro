@@ -34,7 +34,7 @@ const thumbStyle = computed(() => ({
   transform: `translateY(${scrollPercentage.value}px) ${isMouseInPage.value || isDragging.value ? "translateX(0)" : "translateX(20px)"}`,
 }));
 
-// 更新主题状态
+// Update the theme state.
 const updateThemeState = () => {
   isDark.value = document.documentElement.classList.contains("dark");
 };
@@ -44,20 +44,20 @@ const updateScrollbar = () => {
   const clientHeight = document.documentElement.clientHeight;
   const scrollTop = window.scrollY;
 
-  // 只在内容超出视口时显示滚动条
+  // Show the scrollbar only when the content exceeds the viewport.
   showScrollbar.value = scrollHeight > clientHeight;
 
   if (!showScrollbar.value) return;
 
-  // 导航栏高度 64px (h-16 = 4rem = 64px)
+  // Navigation height: 64px (h-16 = 4rem = 64px).
   const navHeight = 64;
   const availableHeight = clientHeight - navHeight;
 
-  // 计算滚动条高度
+  // Calculate the scrollbar height.
   const viewportRatio = availableHeight / scrollHeight;
   thumbHeight.value = Math.max(availableHeight * viewportRatio, 50);
 
-  // 计算滚动条位置
+  // Calculate the scrollbar position.
   const maxScroll = scrollHeight - clientHeight;
   const maxThumbPosition = availableHeight - thumbHeight.value;
   scrollPercentage.value =
@@ -100,7 +100,7 @@ const handleMouseLeave = () => {
 };
 
 onMounted(() => {
-  // 延迟初始化，确保页面完全加载
+  // Initialize after the page finishes loading.
   initializationTimer = setTimeout(() => {
     updateScrollbar();
     updateThemeState();
@@ -113,11 +113,11 @@ onMounted(() => {
   document.addEventListener("mouseenter", handleMouseEnter);
   document.addEventListener("mouseleave", handleMouseLeave);
 
-  // 监听 DOM 变化
+  // Observe DOM changes.
   contentObserver = new MutationObserver(updateScrollbar);
   contentObserver.observe(document.body, { childList: true, subtree: true });
 
-  // 监听主题变化
+  // Observe theme changes.
   themeObserver = new MutationObserver(() => {
     updateThemeState();
   });
@@ -158,7 +158,7 @@ onUnmounted(() => {
   transform: translateX(20px);
   pointer-events: auto;
 
-  /* 浅色模式 */
+  /* Light theme */
   background: linear-gradient(135deg, #ff9ec8 0%, #ffb8d9 50%, #ffc9e5 100%);
   box-shadow: 0 2px 6px rgba(255, 158, 200, 0.5);
 }
@@ -176,7 +176,7 @@ onUnmounted(() => {
   box-shadow: 0 4px 12px rgba(255, 126, 179, 0.5);
 }
 
-/* 深色模式 */
+/* Dark theme */
 .custom-scrollbar-thumb.dark-mode {
   background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 50%, #c4b5fd 100%);
   box-shadow: 0 2px 6px rgba(139, 92, 246, 0.4);

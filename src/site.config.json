@@ -1,0 +1,74 @@
+{
+  "language": "zh-CN",
+  "site": {
+    "name": "Kanade",
+    "logoText": "Kanade",
+    "favicon": "/favicon.svg",
+    "keywords": {
+      "zh-CN": ["Astro", "Kanade", "个人博客", "Sudoria", "前端开发"],
+      "en": [
+        "Astro",
+        "Kanade",
+        "personal blog",
+        "Sudoria",
+        "frontend development"
+      ],
+      "ja": ["Astro", "Kanade", "個人ブログ", "Sudoria", "フロントエンド開発"]
+    }
+  },
+  "author": {
+    "name": {
+      "zh-CN": "苏多莉亚",
+      "en": "Sudoria",
+      "ja": "スドリア"
+    },
+    "handle": "Sudoria",
+    "avatar": "/images/sudoria.jpg",
+    "github": "https://github.com/sudoriaa"
+  },
+  "hero": { "image": "/images/hero.webp" },
+  "navigation": [
+    { "label": "nav.home", "icon": "icon-[bx--bxs-home-circle]", "url": "/" },
+    {
+      "label": "nav.posts",
+      "icon": "icon-[material-symbols--article]",
+      "url": "/posts/"
+    },
+    {
+      "label": "nav.messages",
+      "icon": "icon-[basil--comment-solid]",
+      "url": "/messages/"
+    },
+    {
+      "label": "nav.friends",
+      "icon": "icon-[mingcute--link-3-line]",
+      "url": "/friends/"
+    },
+    {
+      "label": "nav.about",
+      "icon": "icon-[mynaui--indifferent-ghost-solid]",
+      "url": "/about/"
+    }
+  ],
+  "socialLinks": [
+    {
+      "name": "GitHub",
+      "label": "",
+      "icon": "icon-[jam--github]",
+      "url": "$author.github"
+    },
+    {
+      "name": "RSS",
+      "label": "common.rss",
+      "icon": "icon-[lucide--rss]",
+      "url": "/rss.xml"
+    },
+    {
+      "name": "Guestbook",
+      "label": "common.guestbook",
+      "icon": "icon-[lucide--mail]",
+      "url": "/messages/"
+    }
+  ],
+  "text": { "zh-CN": {}, "en": {}, "ja": {} }
+}

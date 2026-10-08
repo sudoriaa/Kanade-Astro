@@ -1,4 +1,5 @@
 ---
+import { t } from "../../i18n";
 import { welcomeConfig } from "../../config";
 import Waves from "./Waves.vue";
 interface Props {
@@ -19,7 +20,7 @@ const Heading = headingLevel === 1 ? "h1" : "h2";
   <div class="hero-shade"></div>
   <div class="hero-content">
     <span class="hero-eyebrow">
-      {compact ? "A LITTLE CORNER OF MY WORLD" : "CODE · LIFE · LITTLE THINGS"}
+      {compact ? t("hero.pageEyebrow") : t("hero.homeEyebrow")}
     </span>
     <Heading class="hero-title">
       {title || welcomeConfig.title}
@@ -30,13 +31,13 @@ const Heading = headingLevel === 1 ? "h1" : "h2";
     <p>{subtitle || welcomeConfig.subTitle}</p>
     {!compact && (
       <a href="#main-content" class="hero-explore">
-        慢慢来，生活会有答案{" "}
+        {t("hero.explore")}{" "}
         <span class="icon-[lucide--arrow-down]" aria-hidden="true"></span>
       </a>
     )}
   </div>
   <span class="hero-side-note" aria-hidden="true">
-    EVERY DAY IS A NEW PAGE
+    {t("hero.sideNote")}
   </span>
   <Waves class="hero-waves" />
 </section>
@@ -66,7 +67,7 @@ const Heading = headingLevel === 1 ? "h1" : "h2";
   }
   .hero-eyebrow {
     display: block;
-    font-family: "Oxanium-Medium", sans-serif;
+    font-family: "Oxanium-Medium", var(--font-body);
     font-size: 11px;
     letter-spacing: 0.28em;
     opacity: 0.92;
@@ -112,7 +113,7 @@ const Heading = headingLevel === 1 ? "h1" : "h2";
     right: 26px;
     top: 42%;
     writing-mode: vertical-rl;
-    font-family: "Oxanium-Medium", sans-serif;
+    font-family: "Oxanium-Medium", var(--font-body);
     font-size: 9px;
     letter-spacing: 0.22em;
     opacity: 0.65;

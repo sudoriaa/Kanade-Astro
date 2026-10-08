@@ -1,13 +1,15 @@
 ---
+import { t, formatDate } from "../../i18n";
 import { render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PersonalCard from "../../components/home/PersonalCard.vue";
 import PostCover from "../../components/posts/PostCover.vue";
-import { getPosts, summarize } from "../../lib/posts";
+import { getPosts, summarize, getPostId } from "../../lib/posts";
+import { categoryLabel } from "../../data/post-options";
 import { personalInfo } from "../../config";
 export async function getStaticPaths() {
   return (await getPosts()).map((post) => ({
-    params: { id: post.id },
+    params: { id: getPostId(post) },
     props: { post },
   }));
 }
@@ -15,7 +17,7 @@ const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const posts = (await getPosts()).map(summarize);
 const summary = summarize(post);
-const index = posts.findIndex((item) => item.id === post.id);
+const index = posts.findIndex((item) => item.id === getPostId(post));
 const newer = posts[index - 1];
 const older = posts[index + 1];
 ---
@@ -23,8 +25,8 @@ const older = posts[index + 1];
 <BaseLayout
   title={post.data.title}
   description={post.data.description}
-  heroTitle="读一段文字，留一点时光"
-  heroSubtitle="认真记录的每个瞬间，都有自己的光。"
+  heroTitle={t("article.heroTitle")}
+  heroSubtitle={t("article.heroSubtitle")}
   article
   publishedTime={post.data.date.toISOString()}
 >
@@ -33,14 +35,14 @@ const older = posts[index + 1];
     <article class="card article-detail">
       <a href="/posts/" class="text-link">
         <span class="icon-[lucide--arrow-left]" aria-hidden="true"></span>
-        返回所有文章
+        {t("article.back")}
       </a>
       <header class="article-header">
         <a
           class="chip"
           href={`/posts/?category=${encodeURIComponent(post.data.category)}`}
         >
-          {post.data.category}
+          {categoryLabel(post.data.category)}
         </a>
         <h1>{post.data.title}</h1>
         <div class="article-meta">
@@ -53,9 +55,9 @@ const older = posts[index + 1];
           />
           <span>{personalInfo.name}</span>
           <span>·</span>
-          <time datetime={summary.date}>{summary.date}</time>
+          <time datetime={summary.date}>{formatDate(summary.date)}</time>
           <span>·</span>
-          <span>约 {summary.minutes} 分钟</span>
+          <span>{t("article.readingTime", { count: summary.minutes })}</span>
         </div>
         <p>{post.data.description}</p>
       </header>
@@ -63,7 +65,7 @@ const older = posts[index + 1];
         <PostCover kind={post.data.cover} featured={post.data.featured} />
       </div>
       <details class="mobile-toc">
-        <summary>文章目录</summary>
+        <summary>{t("article.toc")}</summary>
         <ol>
           {headings
             .filter((h) => h.depth <= 3)
@@ -79,7 +81,7 @@ const older = posts[index + 1];
       </div>
       <div class="article-ending">
         <span>✿</span>
-        <p>感谢读到这里，愿这些文字对你有所帮助。</p>
+        <p>{t("article.thanks")}</p>
       </div>
       <div class="article-tools">
         <div class="article-tags">
@@ -91,7 +93,7 @@ const older = posts[index + 1];
         </div>
         <button id="share-post" class="btn secondary">
           <span class="icon-[lucide--link]" aria-hidden="true"></span>
-          复制文章链接
+          {t("article.share")}
         </button>
       </div>
       <p id="share-status" role="status" class="share-status"></p>
@@ -110,15 +112,15 @@ const older = posts[index + 1];
             <span class="accent">/ {personalInfo.englishName}</span>
           </strong>
           <p>
-            写一点代码，记录一点生活。欢迎来<a href="/messages/">留言板</a>
-            聊聊。
+            {t("article.authorNote")}{" "}
+            <a href="/messages/">{t("common.guestbook")}</a>
           </p>
         </div>
       </div>
-      <nav class="adjacent-posts" aria-label="相邻文章">
+      <nav class="adjacent-posts" aria-label={t("article.adjacent")}>
         {newer ? (
           <a href={`/posts/${newer.id}/`}>
-            <span>← 上一篇</span>
+            <span>{t("article.previous")}</span>
             <strong>{newer.title}</strong>
           </a>
         ) : (
@@ -126,7 +128,7 @@ const older = posts[index + 1];
         )}
         {older && (
           <a href={`/posts/${older.id}/`}>
-            <span>下一篇 →</span>
+            <span>{t("article.next")}</span>
             <strong>{older.title}</strong>
           </a>
         )}
@@ -134,9 +136,10 @@ const older = posts[index + 1];
     </article>
     <aside class="article-sidebar">
       <PersonalCard posts={posts} />
-      <nav class="card panel toc" aria-label="文章目录">
+      <nav class="card panel toc" aria-label={t("article.toc")}>
         <h2 class="panel-title">
-          <span class="icon-[lucide--list]" aria-hidden="true"></span>文章目录
+          <span class="icon-[lucide--list]" aria-hidden="true"></span>
+          {t("article.toc")}
         </h2>
         <ol>
           {headings
@@ -154,6 +157,7 @@ const older = posts[index + 1];
     </aside>
   </div>
   <script>
+    import { t } from "../../i18n";
     const body = document.querySelector<HTMLElement>("#article-body");
     const progress = document.querySelector<HTMLElement>("#reading-progress");
     const tocLinks = [
@@ -192,11 +196,12 @@ const older = posts[index + 1];
           await navigator.clipboard.writeText(
             window.location.href.split("#")[0],
           );
-          if (status)
-            status.textContent = "链接已复制，分享给同样热爱记录的朋友吧。";
+          if (status) status.textContent = t("article.shared");
         } catch {
           if (status)
-            status.textContent = `请复制地址栏中的链接：${window.location.href.split("#")[0]}`;
+            status.textContent = t("article.shareFallback", {
+              url: window.location.href.split("#")[0],
+            });
         }
       });
     document.querySelectorAll<HTMLPreElement>(".prose pre").forEach((pre) => {
@@ -204,18 +209,18 @@ const older = posts[index + 1];
       if (!code) return;
       const button = document.createElement("button");
       button.className = "copy-code";
-      button.textContent = "复制";
-      button.setAttribute("aria-label", "复制代码");
+      button.textContent = t("article.copy");
+      button.setAttribute("aria-label", t("article.copyCode"));
       button.setAttribute("aria-live", "polite");
       button.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(code.textContent || "");
-          button.textContent = "已复制";
+          button.textContent = t("article.copied");
         } catch {
-          button.textContent = "请选中代码复制";
+          button.textContent = t("article.copyFallback");
         }
         setTimeout(() => {
-          button.textContent = "复制";
+          button.textContent = t("article.copy");
         }, 2500);
       });
       pre.append(button);
@@ -297,7 +302,9 @@ const older = posts[index + 1];
   }
   .toc a span {
     color: var(--accent);
-    font: 10px/2 "Oxanium-Medium";
+    font:
+      10px/2 "Oxanium-Medium",
+      var(--font-body);
   }
   .toc a.active,
   .toc a:hover {

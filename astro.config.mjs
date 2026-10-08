@@ -20,7 +20,7 @@ if (
   site.password
 ) {
   throw new Error(
-    "SITE_URL 必须是 HTTP(S) 域名根地址，例如 https://example.com。",
+    "SITE_URL must be an HTTP(S) origin, such as https://example.com, without a path, credentials, query, or fragment.",
   );
 }
 

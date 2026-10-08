@@ -4,7 +4,7 @@ function getInitialTheme(): Theme {
     const stored = localStorage.getItem("theme");
     if (stored === "light" || stored === "dark") return stored;
   } catch {
-    /* 浏览器限制存储时仍可切换当前页面。 */
+    /* Allow theme switching when browser storage is blocked. */
   }
   return window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
@@ -23,7 +23,7 @@ function toggleTheme(): Theme {
   try {
     localStorage.setItem("theme", theme);
   } catch {
-    /* 主题仍在本页生效。 */
+    /* Apply the theme on this page even if saving fails. */
   }
   applyTheme(theme);
   return theme;

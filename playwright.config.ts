@@ -1,4 +1,16 @@
 import { defineConfig, devices } from "@playwright/test";
+import { loadEnv } from "vite";
+
+// Match Astro's production .env loading when a developer overrides the language.
+const environment = loadEnv(
+  "production",
+  process.cwd(),
+  "PUBLIC_SITE_LANGUAGE",
+);
+if (!process.env.PUBLIC_SITE_LANGUAGE && environment.PUBLIC_SITE_LANGUAGE) {
+  process.env.PUBLIC_SITE_LANGUAGE = environment.PUBLIC_SITE_LANGUAGE;
+}
+
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
