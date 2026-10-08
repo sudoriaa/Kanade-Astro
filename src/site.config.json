@@ -6,13 +6,7 @@
     "favicon": "/favicon.svg",
     "keywords": {
       "zh-CN": ["Astro", "Kanade", "个人博客", "Sudoria", "前端开发"],
-      "en": [
-        "Astro",
-        "Kanade",
-        "personal blog",
-        "Sudoria",
-        "frontend development"
-      ],
+      "en": ["Astro", "Kanade", "personal blog", "Sudoria", "frontend development"],
       "ja": ["Astro", "Kanade", "個人ブログ", "Sudoria", "フロントエンド開発"]
     }
   },
