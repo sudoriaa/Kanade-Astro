@@ -44,7 +44,7 @@ onUnmounted(() => {
 <style scoped>
 .nav-header { position: fixed; inset: 0 0 auto; height: 70px; z-index: 40; color: #fff; transition: background .25s, color .25s, box-shadow .25s; }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 100%; width: 100%; }
-.brand { display: flex; align-items: center; gap: 8px; font: 600 27px "Oxanium-Medium", sans-serif; letter-spacing: -.8px; }
+.brand { display: flex; align-items: center; gap: 8px; font: 600 27px "Oxanium-Medium", sans-serif; letter-spacing: -.8px; white-space: nowrap; }
 .brand-flower { font-size: 29px; font-family: sans-serif; font-weight: 400; }
 .brand-dot { color: #ffb4ca; margin-left: -7px; }
 nav { display: flex; gap: 15px; padding-left: 0; }
