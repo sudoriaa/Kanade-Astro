@@ -136,7 +136,7 @@ onUnmounted(() => {
 }
 nav {
   display: flex;
-  gap: 15px;
+  gap: 7px;
   padding-left: 0;
 }
 nav a {
@@ -145,7 +145,7 @@ nav a {
   position: relative;
   gap: 7px;
   padding: 22px 13px;
-  font-size: 15px;
+  font-size: 14px;
   opacity: 0.85;
 }
 nav a:hover,

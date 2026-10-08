@@ -2,7 +2,7 @@
 
 # Kanade · 奏
 
-一个记录热爱与日常的 Astro 7 博客模板。
+一个记录热爱与日常的个人博客。
 
 **简体中文** · [English](README.en.md) · [日本語](README.ja.md)
 
@@ -239,7 +239,7 @@ draft: false
 将 `.env.example` 复制为 `.env`，填写最终域名：
 
 ```dotenv
-SITE_URL=https://example.com
+SITE_URL=https://your-blog.example
 ```
 
 也可以直接在托管平台设置同名环境变量。`astro.config.mjs` 通过 Vite 的 `loadEnv()` 加载环境变量，设置 Astro 官方 `site` 属性；RSS、站点地图、canonical 和 Open Graph 共享这一地址。地址必须为 HTTP(S) 域名根地址，不带用户名、路径、查询参数或片段。修改后重新构建；未设置时默认使用 `http://localhost:4321`。
