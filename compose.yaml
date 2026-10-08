@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        SITE_URL: ${SITE_URL:-https://ricecandy.cn}
+    image: sudoria-kanade:latest
+    container_name: sudoria-kanade
+    restart: unless-stopped
+    ports:
+      - "${KANADE_PORT:-5123}:80"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

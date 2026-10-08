@@ -4,28 +4,56 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "pnpm check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check && vue-tsc --noEmit",
-    "test": "playwright test",
-    "deploy:local": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/preview.ps1"
+    "check": "astro sync && astro check && vue-tsc --noEmit",
+    "test": "pnpm build && playwright test",
+    "deploy:local": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/preview.ps1",
+    "test:e2e": "playwright test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@astrojs/vue": "^5.1.4",
-    "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.16.9",
-    "tailwindcss": "^4.1.18",
-    "vue": "^3.5.26"
+    "@astrojs/vue": "^7.0.3",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.7",
+    "tailwindcss": "^4.3.3",
+    "vue": "^3.5.43",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@iconify/json": "^2.2.428",
-    "@iconify/tailwind4": "^1.2.1",
-    "@playwright/test": "^1.63.0",
-    "@types/node": "^22.20.4",
-    "typescript": "^5.9.3",
-    "vue-tsc": "^3.3.11"
+    "@iconify/tailwind4": "^1.2.3",
+    "@playwright/test": "^1.64.0",
+    "@types/node": "^24.19.1",
+    "typescript": "^6.0.3",
+    "vue-tsc": "^3.3.12",
+    "vite": "^8.3.3",
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "^1.1.0",
+    "@iconify-json/lucide": "^1.2.141",
+    "@iconify-json/simple-icons": "^1.2.99",
+    "@iconify-json/bx": "^1.2.3",
+    "@iconify-json/material-symbols": "^1.2.94",
+    "@iconify-json/basil": "^1.2.4",
+    "@iconify-json/mingcute": "^1.2.8",
+    "@iconify-json/mynaui": "^1.2.19",
+    "@iconify-json/jam": "^1.2.3"
+  },
+  "engines": {
+    "node": ">=22.12.0",
+    "pnpm": ">=10.33.0 <11"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ],
+    "overrides": {
+      "@tailwindcss/typography>postcss-selector-parser": "^7.1.6"
+    }
   }
 }

@@ -6,6 +6,7 @@ category: "前端开发"
 tags: ["TypeScript", "开发笔记"]
 cover: "typescript"
 ---
+
 ## 类型检查发生在运行之前
 
 TypeScript 能帮助我们发现许多结构错误，但类型注解本身不会检查网络响应或本地存储的内容。一个 `as` 断言，只是告诉编译器相信你。
@@ -19,8 +20,12 @@ type Note = { id: string; content: string };
 
 function isNote(value: unknown): value is Note {
   if (typeof value !== "object" || value === null) return false;
-  return "id" in value && typeof value.id === "string"
-    && "content" in value && typeof value.content === "string";
+  return (
+    "id" in value &&
+    typeof value.id === "string" &&
+    "content" in value &&
+    typeof value.content === "string"
+  );
 }
 
 function parseNote(raw: string): Note | null {
