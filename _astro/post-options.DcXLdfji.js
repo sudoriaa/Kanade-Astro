@@ -1,0 +1,1 @@
+import{a as e}from"./i18n.CW88Tnbl.js";var t=[`frontend`,`notes`,`life`],n=n=>t.includes(n)?e(`category.${n}`):n;function r(e){return{前端开发:`frontend`,开发笔记:`notes`,生活随笔:`life`}[e]??t.find(t=>n(t)===e)??e}export{t as n,r,n as t};
