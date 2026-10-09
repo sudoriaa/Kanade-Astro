@@ -236,4 +236,12 @@ nav a.active::after {
     display: none;
   }
 }
+@media (min-width: 760px) and (max-width: 990px) {
+  nav {
+    gap: 7px;
+  }
+  nav a {
+    font-size: 14px;
+  }
+}
 </style>
